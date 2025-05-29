@@ -19,7 +19,8 @@
                 <div class="relative z-0 w-full mb-5 group">
                     <label for="gender">Gender</label>
                     <select name="gender" id="gender" class="" required>
-                        
+                        <option value="">Select a Gender</option>
+
                         {% for value, label in gender_choices %}
                             <option value="{{ value }}">{{ label }}</option>
                         {% endfor %}
@@ -31,6 +32,8 @@
                     <label for="role">Role</label>
                     <select name="role" id="role" class="" required>
                         <option value="">Role</option>
+                        <option value="">Select a Role</option>
+
                         {% for position, role in role_choices %}
                             <option value="{{ position }}">{{ role }}</option>
                         {% endfor %}
