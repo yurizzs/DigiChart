@@ -86,10 +86,62 @@ def user_list(request):
                 role__icontains=search_query
             )
         
-        return render(request, 'user/UserList.html')
+        return render(request, 'user/UserList.html', {'users': user_list})
     except Exception as e:
         return HttpResponse(f'Error alert: {e}')
     
+def edit_user(request, user_id):
+    try:
+        userObj = User.objects.get(pk=user_id)
+        
+        if request.method == 'POST':    
+            full_name = request.POST.get('full_name')
+            gender = request.POST.get('gender')
+            role = request.POST.get('role')
+            birth_date = request.POST.get('birth_date')
+            address = request.POST.get('address')
+            contact_number = request.POST.get('contact_number')
+            username = request.POST.get('username')
+            
+            if User.objects.filter(username=username).exclude(user_id=user_id).exists():
+                messages.error(request, 'Username already exists. Please choose a different username.')
+                return redirect(f'/user/edit/{user_id}')
+            
+            userObj.full_name = full_name
+            userObj.gender = gender
+            userObj.role = role
+            userObj.birth_date = birth_date
+            userObj.address = address
+            userObj.contact_number = contact_number
+            userObj.username = username
+            userObj.save()
+            
+            messages.success(request, 'User updated successfully.')
+            return redirect('/user/list')
+        
+        return render(request, 'user/EditUser.html', {
+            'user': userObj,
+            'gender_choices': User.GENDER_CHOICES,
+            'role_choices': User.ROLE_CHOICES,
+        })
+    except Exception as e:
+        return HttpResponse(f'Error ulit:{e}')
+
+def delete_user(request, user_id):
+    try:
+        user = User.objects.get(pk=user_id)
+        if request.method == 'POST':
+            user.delete()
+            messages.success(request, f'User {user.username} has been deleted successfully.')
+            return redirect('/user/list')
+        else:
+            return render (request, 'user/DeleteUser.html', {'user': user})
+    except User.DoesNotExist:
+        messages.error(request, 'User not found.')
+        return redirect('/user/list')
+    except Exception as e:
+        return HttpResponse(f'Error ulit: {e}')
+   
 def add_patient(request):
     try:
         base_data = {
@@ -169,3 +221,21 @@ def add_patient(request):
             
     except Exception as e:
         return HttpResponse(f'Error sa tabi tabi: {e}')
+    
+def patient_list(request):
+    try:
+        search_query = request.GET.get('search', '')
+        patient_list = Patient.objects.all()
+        
+        if search_query:
+            patient_list = patient_list.filter(
+                full_name__icontains=search_query
+            ) | patient_list.filter(
+                physician__full_name__icontains=search_query
+            ) | patient_list.filter(
+                blood_type__icontains=search_query
+            )
+            
+        return render(request, 'nurse/PatientList.html')
+    except Exception as e:
+        return HttpResponse(f'Error lang dyan: {e}')

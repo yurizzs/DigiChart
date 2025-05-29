@@ -84,3 +84,11 @@ class Patient(models.Model):
     surgeries = models.TextField(blank=False)
     injuries = models.TextField(blank=False)
     family_history = models.TextField(blank=False)
+    
+    @property
+    def full_name(self):
+        name = [self.first_name]
+        if self.middle_name:
+            name.append(self.middle_name)
+        name.append(self.last_name)
+        return ' '.join(name)

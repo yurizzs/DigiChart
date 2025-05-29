@@ -1,0 +1,60 @@
+{% extends 'layout/base.html' %}
+
+{% block 'title' %}Delete User{% endblock 'title' %}
+
+{% block 'content' %}
+
+{% include 'include/sidebar.html' %}
+{% include 'include/toastMessage.html' %}
+<div class="p-2 sm:ml-64 mt-16 md:mt-14">
+    <form action="/user/delete/{{ user.user_id }}" method="post">
+        {% csrf_token %}
+        <div class="grid grid-cols-2 gap-4 mx-auto">
+            <div class="col-span-2 md:col-span-1">
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="full_name" id="full_name" placeholder=" " class="" required value="{{ user.full_name|default:''}}">
+                    <label for="full_name">Full Name</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" value="{{ user.get_gender_display }}" class="">
+                    <label for="gender" class="">Gender</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" value="{{ user.get_role_display}}" class="">
+                    <label for="role" class="">Role</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="date" name="birth_date" id="birth_date" value="{{ user.birth_date|default:''}}"required>
+                    <label for="birth_date" >Birthdate</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="address" id="address" value="{{ user.address|default:''}}" placeholder=" " required>
+                    <label for="address">Address</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="contact_number" id="contact_number" value="{{ user.contact_number|default:''}}" placeholder=" " required>
+                    <label for="contact_number">Contact Number</label>
+                </div>
+            </div>
+            <div class="col-span-1 md:col-span-1">
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="username" id="username" value="{{ user.username|default:''}}" placeholder=" " required>
+                    <label for="username">Username</label>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="flex justify-end pr-5">
+            <a href="/user/list" class="">Back</a>
+            <button type="submit">Delete User</button>
+        </div>
+    </form>
+</div> 
+
+{% endblock 'content' %}

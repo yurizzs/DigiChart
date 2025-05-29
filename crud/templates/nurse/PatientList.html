@@ -1,0 +1,50 @@
+{% extends 'layout/base.html' %}
+
+{% block 'title' %}Patients List{% endblock 'title' %}
+
+{% block 'content' %}
+
+{% include 'include/NurseSidebar.html' %}
+{% include 'include/toastMessage.html' %}
+
+<div class="p-2 sm:ml-64 mt-16 md:mt-14">
+    <div class="mb-4">
+        <form action="/patient/list" method="GET">
+            <input type="text" name="search" placeholder="Search employee" value="{{ search_query }}" >
+            <button type="submit" >Search</button> 
+            {% if search_query %}
+                <a href="/user/list" >Clear</a>
+            {% endif %}
+        </form>
+    </div>
+    <div class="relative overflow-x-auto rounded-sm shadow-sm">
+        <table class="w-full">
+            <thead>
+                <tr>
+                    <th class="px-6 py-3">Full Name</th>
+                    <th class="px-6 py-3">Admitting Physician</th>
+                    <th class="px-6 py-3">Blood Type</th>
+                    <th class="px-6 py-3">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td class="px-6 py-3">{{ patient.full_name}}</td>
+                        <td class="px-6 py-3">{{ patient.physician}}</td>
+                        <td class="px-6 py-3">{{ patient.blood_type}}</td>
+                        <td class="px-6 py-3">
+                            <div>
+                                <a href="#">Edit</a>
+                                <a href="#">Delete</a>
+                                <a href="#">Show Information</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}                   
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock 'content' %}
