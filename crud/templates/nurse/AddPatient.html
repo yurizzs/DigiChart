@@ -1,0 +1,194 @@
+{% extends 'layout/base.html' %}
+
+{% block 'title' %}Add Patient{% endblock 'title' %}
+
+{% block 'content' %}
+
+{% include 'include/NurseSidebar.html' %}
+{% include 'include/toastMessage.html' %}
+<div class="p-2 sm:ml-64 mt-16 md:mt-14">
+    <form action="/patient/add" method="post">
+        {% csrf_token %}
+        <div class="grid grid-cols-2 gap-4 mx-auto">
+            <div class="col-span-2 md:col-span-1">
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="first_name" id="first_name" placeholder=" " class="" required value="{{ form_data.first_name|default:''}}">
+                    <label for="first_name">First Name</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="middle_name" id="middle_name" placeholder=" " class="" value="{{ form_data.middle_name|default:''}}">
+                    <label for="middle_name">Middle Name</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="last_name" id="last_name" placeholder=" " class="" required value="{{ form_data.last_name|default:''}}">
+                    <label for="last_name">Last Name</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <label for="gender">Gender</label>
+                    <select name="gender" id="gender" required>                       
+                        {% for value, label in gender_choices  %}
+                            <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}                           
+                    </select>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="age" id="age" placeholder=" " class="" required value="{{ form_data.age|default:''}}">
+                    <label for="age">Age</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="height" id="height" placeholder=" " class="" required value="{{ form_data.height|default:''}}">
+                    <label for="height">Height</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="weight" id="weight" placeholder=" " class="" required value="{{ form_data.weight|default:''}}">
+                    <label for="weight">weight</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="date" name="lmp" id="lmp" value=" {{form_data.lmp|default:' '}}"required>
+                    <label for="lmp" >Last Menstrual Period</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="address" id="address" placeholder=" " class="" required value="{{ form_data.address|default:''}}">
+                    <label for="address">Address</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="contact_number" id="contact_number" placeholder=" " class="" required value="{{ form_data.contact_number|default:''}}">
+                    <label for="contact_number">Contact Number</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <div class="flex items-center flex-col">
+                        <h3>Vital Signs Upon Admission</h3>
+                        <div>
+                            <div>
+                                <input type="text" name="temperature" id="temperature" placeholder=" " class="" required value="{{ form_data.temperature|default:''}}">
+                                <label for="temperature">Temperature</label>
+                            </div>
+                            <div>
+                                <input type="text" name="pulse" id="pulse" placeholder=" " class="" required value="{{ form_data.pulse|default:''}}">
+                                <label for="pulse">Pulse</label>
+                            </div>
+                            <div>
+                                <input type="text" name="respiration" id="respiration" placeholder=" " class="" required value="{{ form_data.respiration|default:''}}">
+                                <label for="respiration">Respiratory Rate</label>
+                            </div>
+                            <div>
+                                <input type="text" name="blood_pressure" id="blood_pressure" placeholder=" " class="" required value="{{ form_data.blood_pressure|default:''}}">
+                                <label for="blood_pressure">Blood Pressure</label>
+                            </div>
+                            <div>
+                                <input type="text" name="o_sat" id="o_sat" placeholder=" " class="" required value="{{ form_data.oSat|default:''}}">
+                                <label for="o_sat">Oxygen Saturation</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <label for="status">Status</label>
+                    <select name="status" id="status" class="" required>
+                        
+                        {% for label, value in status_choices  %}
+                            <option value="{{ label }}">{{ value }}</option>
+                        {% endfor %}
+                            
+                    </select>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="religion" id="religion" placeholder=" " class="" required value="{{ form_data.religion|default:''}}">
+                    <label for="religion">Religion</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <label for="blood_type">Blood Type</label>
+                    <select name="blood_type" id="blood_type" class="" required>
+                        
+                        {% for blood, type in blood_types  %}
+                            <option value="{{ blood }}">{{ type }}</option>
+                        {% endfor %}
+                            
+                    </select>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="datetime-local" name="admission_date" id="admission_date" value=" {{form_data.admission_date|default:' '}}"required>
+                    <label for="admission_date" >Date and Time of Admission</label>
+                </div>
+
+                <div>
+                    <label for="physician">Admitting Physician</label>
+                    <select name="physician" id="physician" class="" required>
+                        <option value="">Select a Doctor</option>
+                        
+                        {% for doctor in physicians %}
+                            <option value="{{ doctor.user_id }}">{{ doctor.full_name}}</option>
+                        {% endfor %}
+                            
+                    </select>
+                </div>
+
+                <div>
+                    <label for="nurse">Nurse attendee</label>
+                    <select name="nurse" id="nurse" class required>
+                        <option value="">Attending Nurse</option>
+                        
+                        {% for nurse in nurses %}
+                            <option value="{{ nurse.user_id }}">{{ nurse.full_name }}</option>
+                        {% endfor %}
+                            
+                    </select>
+                </div>
+
+                <div>
+                    <input type="text" name="chief_complaint" id="chief_complaint" placeholder="" class="" required value="{{ form_data.chief_complaint|default:''}}">
+                    <label for="chief_complaint">Chief Complaint</label>
+                </div>
+
+                <div>
+                    <input type="text" name="admitting_diagnosis" id="admitting_diagnosis" placeholder="" class="" required value="{{ form_data.admitting_diagnosis|default:''}}">
+                    <label for="admitting_diagnosis">Admitting Diagnosis</label>
+                </div>
+
+                <div>
+                    <div>
+                        <input type="text" name="past_illness" id="past_illness" placeholder="" class="" required value="{{ form_data.past_illness|default:''}}">
+                        <label for="past_illness">Past Illness</label>
+                    </div>
+    
+                    <div>
+                        <input type="text" name="previous_hospitalization" id="previous_hospitalization" placeholder="" class="" required value="{{ form_data.previous_hospitalization|default:''}}">
+                        <label for="previous_hospitalization">Previous Hospitalization</label>
+                    </div>
+    
+                    <div>
+                        <input type="text" name="surgeries" id="surgeries" placeholder="" class="" required value="{{ form_data.surgeries|default:''}}">
+                        <label for="surgeries">Sugeries</label>
+                    </div>
+    
+                    <div>
+                        <input type="text" name="injuries" id="injuries" placeholder="" class="" required value="{{ form_data.injuries|default:''}}">
+                        <label for="injuries">Injuries</label>
+                    </div>
+    
+                    <div>
+                        <input type="text" name="family_history" id="family_history" class="" required value="{{ form_data.family_history|default:''}}">
+                        <label for="family_history">Family History</label>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock 'content' %}
