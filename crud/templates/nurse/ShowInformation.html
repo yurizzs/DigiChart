@@ -1,0 +1,167 @@
+{% extends 'layout/base.html' %}
+
+{% block 'title' %}Patient Information{% endblock 'title' %}
+
+{% block 'content' %}
+
+{% include 'include/NurseSidebar.html' %}
+{% include 'include/toastMessage.html' %}
+<div class="p-2 sm:ml-64 mt-16 md:mt-14">
+    <form action="/patient/information/{{ user.patient_id}}" method="post">
+        {% csrf_token %}
+        <div class="grid grid-cols-2 gap-4 mx-auto">
+            <div class="col-span-2 md:col-span-1">
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="first_name" id="first_name" placeholder=" " class="" required value="{{ patient.first_name }}" readonly>
+                    <label for="first_name">First Name</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="middle_name" id="middle_name" placeholder=" " class="" value="{{ patient.middle_name }}" readonly>
+                    <label for="middle_name">Middle Name</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="last_name" id="last_name" placeholder=" " class="" value="{{ patient.last_name }}" readonly>
+                    <label for="last_name">Last Name</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" value="{{ patient.get_gender_display }}" class="">
+                    <label for="gender" class="">Gender</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="age" id="age" placeholder=" " class="" value="{{ patient.age }}" readonly>
+                    <label for="age">Age</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="height" id="height" placeholder=" " class="" value="{{ patient.height }}" readonly>
+                    <label for="height">Height</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="weight" id="weight" placeholder=" " class="" value="{{ patient.weight }}" readonly>
+                    <label for="weight">weight</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="date" name="lmp" id="lmp" value="{{ patient.lmp |date:'Y-m-d' }}" readonly>
+                    <label for="lmp" >Last Menstrual Period</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="address" id="address" placeholder=" " class="" value="{{ patient.address }}" readonly>
+                    <label for="address">Address</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="contact_number" id="contact_number" placeholder=" " class="" value="{{ patient.contact_number }}" readonly>
+                    <label for="contact_number">Contact Number</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <div class="flex items-center flex-col">
+                        <h3>Vital Signs Upon Admission</h3>
+                        <div class="flex flex-row w-full">
+                            <div>
+                                <input type="text" name="temperature" id="temperature" placeholder=" " class="" value="{{ patient.temperature }}" readonly>
+                                <label for="temperature">Temperature</label>
+                            </div>
+                            <div>
+                                <input type="text" name="pulse" id="pulse" placeholder=" " class="" value="{{ patient.pulse }}" readonly>
+                                <label for="pulse">Pulse</label>
+                            </div>
+                            <div>
+                                <input type="text" name="respiration" id="respiration" placeholder=" " class="" value="{{ patient.respiration }}" readonly>
+                                <label for="respiration">Respiratory Rate</label>
+                            </div>
+                            <div>
+                                <input type="text" name="blood_pressure" id="blood_pressure" placeholder=" " class="" value="{{ patient.blood_pressure }}" readonly>
+                                <label for="blood_pressure">Blood Pressure</label>
+                            </div>
+                            <div>
+                                <input type="text" name="o_sat" id="o_sat" placeholder=" " class="" value="{{ patient.o_sat }}" readonly>
+                                <label for="o_sat">Oxygen Saturation</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" value="{{ patient.get_status_display}}" class="" readonly>
+                    <label for="status" class="">Status</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="religion" id="religion" placeholder=" " class="" value="{{ patient.religion }}" readonly>
+                    <label for="religion">Religion</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                        <input type="text" value="{{ patient.get_blood_type_display }}" class="">
+                        <label for="blood_type">Blood Type</label>
+                    </select>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="datetime-local" name="admission_date" id="admission_date" value="{{ patient.admission_date|date:'Y-m-d\\TH:i' }}" readonly>
+                    <label for="admission_date">Date and Time of Admission</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                   <input type="text" value="{{ patient.get_physician_display }}" class="">
+                    <label for="physician" class="">Attending Physician</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" value="{{ patient.get_nurse_display }}" class="">
+                    <label for="nurse" class="">Assigned Nurse</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="chief_complaint" id="chief_complaint" placeholder="" class="" value="{{ patient.chief_complaint }}" readonly>
+                    <label for="chief_complaint">Chief Complaint</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="text" name="admitting_diagnosis" id="admitting_diagnosis" placeholder="" class="" value="{{ patient.admitting_diagnosis }}" readonly>
+                    <label for="admitting_diagnosis">Admitting Diagnosis</label>
+                </div>
+
+                <div>
+                    <div class="relative z-0 w-full mb-5 group">
+                        <input type="text" name="past_illness" id="past_illness" placeholder="" class="" value="{{ patient.past_illness }}" readonly>
+                        <label for="past_illness">Past Illness</label>
+                    </div>
+    
+                    <div class="relative z-0 w-full mb-5 group">
+                        <input type="text" name="previous_hospitalization" id="previous_hospitalization" placeholder="" class="" value="{{ patient.previous_hospitalization}}" readonly>
+                        <label for="previous_hospitalization">Previous Hospitalization</label>
+                    </div>
+    
+                    <div class="relative z-0 w-full mb-5 group">
+                        <input type="text" name="surgeries" id="surgeries" placeholder="" class="" value="{{ patient.surgeries }}" readonly>
+                        <label for="surgeries">Sugeries</label>
+                    </div>
+    
+                    <div class="relative z-0 w-full mb-5 group">
+                        <input type="text" name="injuries" id="injuries" placeholder="" class="" value="{{ patient.injuries }}" readonly>
+                        <label for="injuries">Injuries</label>
+                    </div>
+    
+                    <div class="relative z-0 w-full mb-5 group">
+                        <input type="text" name="family_history" id="family_history" class="" value="{{ patient.family_history }}" readonly>
+                        <label for="family_history">Family History</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-end pr-5">
+            <a href="/patient/list" class="">Back</a>
+        </div>
+    </form>
+</div>
+
+{% endblock 'content' %}

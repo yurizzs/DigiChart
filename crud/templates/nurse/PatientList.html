@@ -28,16 +28,15 @@
                 </tr>
             </thead>
             <tbody>
-                {% for user in users %}
+                {% for patient in patients %}
                     <tr>
                         <td class="px-6 py-3">{{ patient.full_name}}</td>
-                        <td class="px-6 py-3">{{ patient.physician}}</td>
+                        <td class="px-6 py-3">{{ patient.physician.full_name }}</td>
                         <td class="px-6 py-3">{{ patient.blood_type}}</td>
                         <td class="px-6 py-3">
                             <div>
-                                <a href="#">Edit</a>
-                                <a href="#">Delete</a>
-                                <a href="#">Show Information</a>
+                                <a href="/patient/edit/{{ patient.patient_id }}">Edit</a>
+                                <a href="/patient/information/{{ patient.patient_id }}">Show Information</a>
                             </div>
                         </td>
                     </tr>
