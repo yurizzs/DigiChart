@@ -61,6 +61,7 @@ class Patient(models.Model):
     last_name = models.CharField(max_length=55, blank=False)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     age = models.PositiveIntegerField(blank=False)
+    birth_date = models.DateField(blank=False)
     height = models.DecimalField(max_digits=5, decimal_places=2, blank=False)
     weight = models.DecimalField(max_digits=5, decimal_places=2, blank=False)
     lmp = models.DateField(blank=True)

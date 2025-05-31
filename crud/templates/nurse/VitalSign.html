@@ -1,0 +1,43 @@
+{% extends 'layout/base.html' %}
+
+{% block 'title' %} Vital Signs Form {% endblock 'title' %}
+
+{% block 'content' %}
+{% include 'include/NurseSidebar.html' %}
+{% include 'include/toastMessage.html' %}
+
+<div>
+    <div class="container">
+        <h2 class="text-center">Vital Signs Form</h2>
+        <form method="POST" action="{% url 'nurse:vital_signs' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="patient_id" class="form-label">Patient ID</label>
+                <input type="text" class="form-control" id="patient_id" name="patient_id" required>
+            </div>
+            <div>
+                <label for="time" class="form-label">Time</label>
+                <input type="time" class="form-control" id="time" name="time" required>
+            </div>
+            <div class="mb-3">
+                <label for="temperature" class="form-label">Temperature (°C)</label>
+                <input type="number" step="0.1" class="form-control" id="temperature" name="temperature" required>
+            </div>
+            <div class="mb-3">
+                <label for="pulse_rate" class="form-label">Pulse Rate (bpm)</label>
+                <input type="number" class="form-control" id="pulse_rate" name="pulse_rate" required>
+            </div>
+            <div class="mb-3">
+                <label for="respiration" class="form-label">Respiration</label>
+                <input type="number" class="form-control" id="respiration" name="respiration" required>
+            </div>
+            <div class="mb-3">
+                <label for="blood_pressure" class="form-label">Blood Pressure (mmHg)</label>
+                <input type="text" class="form-control" id="blood_pressure" name="blood_pressure" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+{% endblock 'content' %}

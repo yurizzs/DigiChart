@@ -38,17 +38,22 @@
                 </div>
 
                 <div class="relative z-0 w-full mb-5 group">
-                    <input type="text" name="age" id="age" placeholder=" " class="" required value="{{ form_data.age|default:''}}">
+                    <input type="number" name="age" id="age" placeholder=" " class="" required value="{{ form_data.age|default:''}}">
                     <label for="age">Age</label>
                 </div>
 
                 <div class="relative z-0 w-full mb-5 group">
-                    <input type="text" name="height" id="height" placeholder=" " class="" required value="{{ form_data.height|default:''}}">
+                    <input type="date" name="birth_date" id="birth_date" value="{{ form_data.birth_date|default:''}}" required>
+                    <label for="birth_date">Date of Birth</label>
+                </div>
+
+                <div class="relative z-0 w-full mb-5 group">
+                    <input type="number" name="height" id="height" placeholder=" " class="" required value="{{ form_data.height|default:''}}">
                     <label for="height">Height</label>
                 </div>
 
                 <div class="relative z-0 w-full mb-5 group">
-                    <input type="text" name="weight" id="weight" placeholder=" " class="" required value="{{ form_data.weight|default:''}}">
+                    <input type="number" name="weight" id="weight" placeholder=" " class="" required value="{{ form_data.weight|default:''}}">
                     <label for="weight">weight</label>
                 </div>
 
@@ -72,15 +77,15 @@
                         <h3>Vital Signs Upon Admission</h3>
                         <div class="flex flex-row w-full">
                             <div>
-                                <input type="text" name="temperature" id="temperature" placeholder=" " class="" required value="{{ form_data.temperature|default:''}}">
-                                <label for="temperature">Temperature</label>
+                                <input type="number" name="temperature" id="temperature" placeholder=" " class="" required value="{{ form_data.temperature|default:''}}">
+                                <label for="temperature">Temperature (°C)</label>
                             </div>
                             <div>
-                                <input type="text" name="pulse" id="pulse" placeholder=" " class="" required value="{{ form_data.pulse|default:''}}">
-                                <label for="pulse">Pulse</label>
+                                <input type="number" name="pulse" id="pulse" placeholder=" " class="" required value="{{ form_data.pulse|default:''}}">
+                                <label for="pulse">Pulse Rate (bpm)</label>
                             </div>
                             <div>
-                                <input type="text" name="respiration" id="respiration" placeholder=" " class="" required value="{{ form_data.respiration|default:''}}">
+                                <input type="number" name="respiration" id="respiration" placeholder=" " class="" required value="{{ form_data.respiration|default:''}}">
                                 <label for="respiration">Respiratory Rate</label>
                             </div>
                             <div>
@@ -88,7 +93,7 @@
                                 <label for="blood_pressure">Blood Pressure</label>
                             </div>
                             <div>
-                                <input type="text" name="o_sat" id="o_sat" placeholder=" " class="" required value="{{ form_data.oSat|default:''}}">
+                                <input type="number" name="o_sat" id="o_sat" placeholder=" " class="" required value="{{ form_data.oSat|default:''}}">
                                 <label for="o_sat">Oxygen Saturation</label>
                             </div>
                         </div>

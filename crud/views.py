@@ -158,6 +158,7 @@ def add_patient(request):
             last_name = request.POST.get('last_name')
             gender = request.POST.get('gender')
             age = request.POST.get('age')
+            birth_date = request.POST.get('birth_date')
             height = request.POST.get('height')
             weight = request.POST.get('weight')
             lmp = request.POST.get('lmp') or None
@@ -191,6 +192,7 @@ def add_patient(request):
                 last_name=last_name,
                 gender=gender,
                 age=age,
+                birth_date=birth_date,
                 height=height,
                 weight=weight,
                 lmp=lmp,
@@ -254,6 +256,7 @@ def edit_patient(request, patient_id):
             last_name = request.POST.get('last_name')
             gender = request.POST.get('gender')
             age = request.POST.get('age')
+            birth_date = request.POST.get('birth_date')
             height = request.POST.get('height')
             weight = request.POST.get('weight')
             lmp = request.POST.get('lmp') or None
@@ -286,6 +289,7 @@ def edit_patient(request, patient_id):
             patientObj.last_name = last_name
             patientObj.gender = gender
             patientObj.age = age
+            patientObj.birth_date = birth_date
             patientObj.height = height
             patientObj.weight = weight
             patientObj.lmp = lmp

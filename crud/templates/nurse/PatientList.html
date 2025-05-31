@@ -10,7 +10,7 @@
 <div class="p-2 sm:ml-64 mt-16 md:mt-14">
     <div class="mb-4">
         <form action="/patient/list" method="GET">
-            <input type="text" name="search" placeholder="Search employee" value="{{ search_query }}" >
+            <input type="text" name="search" placeholder="Search patient" value="{{ search_query }}" >
             <button type="submit" >Search</button> 
             {% if search_query %}
                 <a href="/user/list" >Clear</a>
@@ -23,7 +23,10 @@
                 <tr>
                     <th class="px-6 py-3">Full Name</th>
                     <th class="px-6 py-3">Admitting Physician</th>
-                    <th class="px-6 py-3">Blood Type</th>
+                    <th class="px-6 py-3">Age</th>
+                    <th class="px-6 py-3">Sex</th>
+                    <th class="px-6 py-3">Marital Status</th>
+                    <th class="px-6 py-3">Date of Birth</th>
                     <th class="px-6 py-3">Action</th>
                 </tr>
             </thead>
@@ -32,7 +35,10 @@
                     <tr>
                         <td class="px-6 py-3">{{ patient.full_name}}</td>
                         <td class="px-6 py-3">{{ patient.physician.full_name }}</td>
-                        <td class="px-6 py-3">{{ patient.blood_type}}</td>
+                        <td class="px-6 py-3">{{ patient.age }}</td>
+                        <td class="px-6 py-3">{{ patient.get_gender_display }}</td>
+                        <td class="px-6 py-3">{{ patient.get_status_display }}</td>
+                        <td class="px-6 py-3">{{ patient.birth_date|date:"F d, Y"}}</td>
                         <td class="px-6 py-3">
                             <div>
                                 <a href="/patient/edit/{{ patient.patient_id }}">Edit</a>
