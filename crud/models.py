@@ -85,6 +85,10 @@ class Patient(models.Model):
     surgeries = models.TextField(blank=False)
     injuries = models.TextField(blank=False)
     family_history = models.TextField(blank=False)
+    date = models.DateField(blank=False)
+    time = models.TimeField(blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     @property
     def full_name(self):
