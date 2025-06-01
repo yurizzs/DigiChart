@@ -80,24 +80,24 @@
                         <h3>Vital Signs Upon Admission</h3>
                         <div class="flex flex-row w-full">
                             <div>
-                                <input type="text" name="temperature" id="temperature" placeholder=" " class="" required value="{{ patient.temperature|default:''}}">
-                                <label for="temperature">Temperature</label>
+                                <input type="text" name="temperature_on_admission" id="temperature_on_admission" placeholder=" " class="" required value="{{ patient.temperature_on_admission|default:''}}">
+                                <label for="temperature_on_admission">Temperature</label>
                             </div>
                             <div>
-                                <input type="text" name="pulse" id="pulse" placeholder=" " class="" required value="{{ patient.pulse|default:''}}">
-                                <label for="pulse">Pulse</label>
+                                <input type="text" name="pulse_on_admission" id="puls_on_admission" placeholder=" " class="" required value="{{ patient.pulse_on_admission|default:''}}">
+                                <label for="pulse_on_admission">Pulse</label>
                             </div>
                             <div>
-                                <input type="text" name="respiration" id="respiration" placeholder=" " class="" required value="{{ patient.respiration|default:''}}">
-                                <label for="respiration">Respiratory Rate</label>
+                                <input type="text" name="respiration_on_admission" id="respiration_on_admission" placeholder=" " class="" required value="{{ patient.respiration_on_admission|default:''}}">
+                                <label for="respiration_on_admission">Respiratory Rate</label>
                             </div>
                             <div>
-                                <input type="text" name="blood_pressure" id="blood_pressure" placeholder=" " class="" required value="{{ patient.blood_pressure|default:''}}">
-                                <label for="blood_pressure">Blood Pressure</label>
+                                <input type="text" name="blood_pressure_on_admission" id="blood_pressure_on_admission" placeholder=" " class="" required value="{{ patient.blood_pressure_on_admission|default:''}}">
+                                <label for="blood_pressure_on_admission">Blood Pressure</label>
                             </div>
                             <div>
-                                <input type="text" name="o_sat" id="o_sat" placeholder=" " class="" required value="{{ patient.o_sat|default:''}}">
-                                <label for="o_sat">Oxygen Saturation</label>
+                                <input type="text" name="o_sat_on_admission" id="o_sat_on_admission" placeholder=" " class="" required value="{{ patient.o_sat_on_admission|default:''}}">
+                                <label for="o_sat_on_admission">Oxygen Saturation</label>
                             </div>
                         </div>
                     </div>

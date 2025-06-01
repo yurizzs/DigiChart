@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
-from .models import User, Patient
+from .models import User, Patient, VitalSigns
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
@@ -164,11 +164,11 @@ def add_patient(request):
             lmp = request.POST.get('lmp') or None
             address = request.POST.get('address')
             contact_number = request.POST.get('contact_number')
-            temperature = request.POST.get('temperature')
-            pulse = request.POST.get('pulse')
-            respiration = request.POST.get('respiration')
-            blood_pressure = request.POST.get('blood_pressure')
-            o_sat = request.POST.get('o_sat')
+            temperature_on_admission = request.POST.get('temperature_on_admission')
+            pulse_on_admission = request.POST.get('pulse_on_admission')
+            respiration_on_admission = request.POST.get('respiration_on_admission')
+            blood_pressure_on_admission = request.POST.get('blood_pressure_on_admission')
+            o_sat_on_admission = request.POST.get('o_sat_on_admission')
             status = request.POST.get('status')
             religion = request.POST.get('religion')
             blood_type = request.POST.get('blood_type')
@@ -198,11 +198,11 @@ def add_patient(request):
                 lmp=lmp,
                 address=address,
                 contact_number=contact_number, 
-                temperature=temperature,
-                pulse=pulse,
-                respiration=respiration,
-                blood_pressure=blood_pressure,
-                o_sat=o_sat,
+                temperature_on_admission=temperature_on_admission,
+                pulse_on_admission=pulse_on_admission,
+                respiration_on_admission=respiration_on_admission,
+                blood_pressure_on_admission=blood_pressure_on_admission,
+                o_sat_on_admission=o_sat_on_admission,
                 status=status,
                 religion=religion,
                 blood_type=blood_type,
@@ -262,11 +262,11 @@ def edit_patient(request, patient_id):
             lmp = request.POST.get('lmp') or None
             address = request.POST.get('address')
             contact_number = request.POST.get('contact_number')
-            temperature = request.POST.get('temperature')
-            pulse = request.POST.get('pulse')
-            respiration = request.POST.get('respiration')
-            blood_pressure = request.POST.get('blood_pressure')
-            o_sat = request.POST.get('o_sat')
+            temperature_on_admission = request.POST.get('temperature_on_admission')
+            pulse_on_admission = request.POST.get('pulse_on_admission')
+            respiration_on_admission = request.POST.get('respiration_on_admission')
+            blood_pressure_on_admission = request.POST.get('blood_pressure_on_admission')
+            o_sat_on_admission = request.POST.get('o_sat_on_admission')
             status = request.POST.get('status')
             religion = request.POST.get('religion')
             blood_type = request.POST.get('blood_type')
@@ -295,11 +295,11 @@ def edit_patient(request, patient_id):
             patientObj.lmp = lmp
             patientObj.address = address
             patientObj.contact_number = contact_number
-            patientObj.temperature = temperature
-            patientObj.pulse = pulse
-            patientObj.respiration = respiration
-            patientObj.blood_pressure = blood_pressure
-            patientObj.o_sat = o_sat
+            patientObj.temperature_on_admission = temperature_on_admission
+            patientObj.pulse_on_admission = pulse_on_admission
+            patientObj.respiration_on_admission = respiration_on_admission
+            patientObj.blood_pressure_on_admission = blood_pressure_on_admission
+            patientObj.o_sat_on_admission = o_sat_on_admission
             patientObj.status = status
             patientObj.religion = religion
             patientObj.blood_type = blood_type
@@ -335,3 +335,39 @@ def show_information(request, patient_id):
         return render(request, 'nurse/ShowInformation.html', {'patient': patient})
     except Exception as e:
         return HttpResponse(f'Error: {e}')
+    
+def add_vitals(request):
+    try:
+        if request.method == 'POST':
+            patient_id = request.POST.get('patient_id')  # get patient_id from form
+            patient = get_object_or_404(Patient, pk=patient_id)
+
+            temperature = request.POST.get('temperature')
+            pulse = request.POST.get('pulse')
+            respiration = request.POST.get('respiration')
+            blood_pressure = request.POST.get('blood_pressure')
+            o_sat = request.POST.get('o_sat')
+            time = request.POST.get('time')
+            date = request.POST.get('date')
+
+            # Save the new vital sign record linked to the patient
+            VitalSigns.objects.create(
+                patient=patient,
+                temperature=temperature,
+                pulse=pulse,
+                respiration=respiration,
+                blood_pressure=blood_pressure,
+                o_sat=o_sat,
+                time=time,
+                date=date
+            )
+
+            messages.success(request, 'Vital signs added successfully.')
+            return redirect(f'/patient/info/{patient_id}')  # Redirect as needed
+
+        # For GET request, show the form and pass all patients
+        patients = Patient.objects.all()
+        return render(request, 'nurse/VitalSign.html', {'patients': patients})
+
+    except Exception as e:
+        return HttpResponse(f'Error da ah: {e}')
