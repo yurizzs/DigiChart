@@ -1,0 +1,36 @@
+{% extends 'layout/base.html' %}
+{% block 'title' %} Doctor Dashboard {% endblock 'title' %}
+
+{% block 'content' %}
+{% include 'include/DoctorSidebar.html' %}
+
+<div class="flex justify-center items-center h-screen">
+    <div class="grid grid-cols-2 grid-rows-2 sm:grid-cols-2 lg:grid-cols-2 gap-2 p-4">
+      <!-- Total Patients -->
+      <div class="bg-white shadow-md rounded-xl p-6 text-center grid-cols-1 grid-rows-1">
+        <h3 class="text-gray-500 text-sm font-medium">Total Patients</h3>
+        <p class="text-3xl font-bold text-blue-600">{{ total_patients }}</p>
+      </div>
+    
+      <!-- Total Physicians -->
+      <div class="bg-white shadow-md rounded-xl p-6 text-center grid-cols-2 grid-rows-1">
+        <h3 class="text-gray-500 text-sm font-medium">Total Physicians</h3>
+        <p class="text-3xl font-bold text-green-600">{{ total_physicians }}</p>
+      </div>
+    
+      <!-- Admissions Today -->
+      <div class="bg-white shadow-md rounded-xl p-6 text-center grid-cols-1 grid-rows-2">
+        <h3 class="text-gray-500 text-sm font-medium">Admissions Today</h3>
+        <p class="text-3xl font-bold text-yellow-600">{{ admissions_today }}</p>
+      </div>
+    
+      <!-- Total Nurses -->
+      <div class="bg-white shadow-md rounded-xl p-6 text-center grid-cols-2 grid-rows-2">
+        <h3 class="text-gray-500 text-sm font-medium">Total Nurses</h3>
+        <p class="text-3xl font-bold text-pink-600">{{ total_nurses }}</p>
+      </div>
+    </div>
+</div>
+
+{% endblock 'content' %}
+

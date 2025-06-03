@@ -1,0 +1,20 @@
+{% extends 'layout/base.html' %}
+{% block 'title' %} Nurse Dashboard {% endblock 'title' %}
+
+{% block 'content' %}
+{% include 'include/NurseSidebar.html' %}
+
+<div class="p-4 sm:ml-64 mt-16">
+    <h2 class="text-2xl font-bold mb-4">Nurse Dashboard</h2>
+
+    <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-xl">
+        <h3 class="text-xl font-semibold mb-4">Today’s Summary</h3>
+        <ul class="space-y-2 text-gray-700">
+            <li>🧍‍♀️ <strong>Total Patients Admitted:</strong> {{ total_patients_today }}</li>
+            <li>💉 <strong>Vital Signs Recorded:</strong> {{ vitals_today }}</li>
+            <li>⏳ <strong>Pending Tasks:</strong> {{ pending_tasks }}</li>
+        </ul>
+    </div>
+</div>
+
+{% endblock 'content' %}

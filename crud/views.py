@@ -5,9 +5,18 @@ from .models import User, Patient, VitalSigns
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
+from django.db.models.functions import TruncDate
+from datetime import date
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 # Create your views here.
+
+def get_current_user(request):
+    if request.user.is_authenticated:
+        try:
+            return User.objects.get(username=request.user.username)
+        except User.DoesNotExist:
+            return None
 
 def add_user(request):
     try:
@@ -232,7 +241,11 @@ def patient_list(request):
         
         if search_query:
             patient_list = patient_list.filter(
-                full_name__icontains=search_query
+                first_name__icontains=search_query
+            ) | patient_list.filter(
+                middle_name__icontains=search_query
+            ) | patient_list.filter(
+                last_name__icontains=search_query
             ) | patient_list.filter(
                 physician__full_name__icontains=search_query
             ) | patient_list.filter(
@@ -363,7 +376,7 @@ def add_vitals(request):
             )
 
             messages.success(request, 'Vital signs added successfully.')
-            return redirect(f'/patient/info/{patient_id}')  # Redirect as needed
+            return redirect(f'/vitals/info/{patient_id}')  # Redirect as needed
 
         # For GET request, show the form and pass all patients
         patients = Patient.objects.all()
@@ -371,3 +384,52 @@ def add_vitals(request):
 
     except Exception as e:
         return HttpResponse(f'Error da ah: {e}')
+
+def patient_vitals(request, patient_id):
+    try:
+        patient = get_object_or_404(Patient, pk=patient_id)
+        vitals = VitalSigns.objects.filter(patient_id=patient_id).order_by('-date', '-time')
+
+        return render(request, 'nurse/PatientVitals.html', {
+            'patient': patient,
+            'vitals': vitals
+        })
+    except Exception as e:
+        return HttpResponse(f'Error fetching vitals: {e}')
+
+def nurse_dashboard(request):
+    try:
+        today = date.today()
+        
+        total_patients_today = Patient.objects.annotate(
+            admission_day=TruncDate('admission_date')
+        ).filter(admission_day=today).count()
+        vitals_today = VitalSigns.objects.filter(date=today).count()
+        
+        data = {
+            'total_patients_today': total_patients_today,
+            'vitals_today': vitals_today,
+            'pending_task': 3,
+        }
+        
+        return render(request, 'dashboard/NurseDashboard.html', data)
+    except Exception as e:
+        return HttpResponse(f'Errowr: {e}')
+    
+def admin_dashboard(request):
+    today = date.today()
+
+    total_patients = Patient.objects.count()
+    admissions_today = Patient.objects.filter(admission_date__date=today).count()
+
+    total_physicians = User.objects.filter(role='D').count()  # 'D' for Doctor
+    total_nurses = User.objects.filter(role='N').count()      # 'N' for Nurse
+
+    context = {
+        'total_patients': total_patients,
+        'admissions_today': admissions_today,
+        'total_physicians': total_physicians,
+        'total_nurses': total_nurses,
+    }
+
+    return render(request, 'dashboard/AdminDash.html', context)

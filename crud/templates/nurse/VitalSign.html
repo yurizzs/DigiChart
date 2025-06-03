@@ -6,25 +6,25 @@
 {% include 'include/NurseSidebar.html' %}
 {% include 'include/toastMessage.html' %}
 
-<div>
+<div class="p-2 sm:ml-64 mt-16 md:mt-14">
     <div class="container">
         <h2 class="text-center">Vital Signs Form</h2>
-        <form method="POST" action="vitals/add">
+        <form method="POST" action="/vitals/add">
             {% csrf_token %}
             <div>
                 <label for="date" class="form-label">Date</label>
                 <input type="date" class="form-control" id="date" name="date" value="{{ patient.date |date:'Y-m-d' }}" required>
-                <div>      
-                    <div class="mb-3">
-                        <label for="patient_id" class="form-label">Patient ID</label>
-                        <select name="patient_id" id="patient" required>
+                <div class="mb-3">
+                    <label for="patient_id" class="form-label">Patient ID</label>
+                    <select name="patient_id" id="patient" required>
+                        
+                        {% for p in patients  %}
+                            <option value="{{ p.patient_id }}">{{ p.full_name }}</option>
+                        {% endfor %}
                             
-                            {% for p in patients  %}
-                                <option value="{{ p.patient_id }}">{{ p.full_name }}</option>
-                            {% endfor %}
-                                
-                        </select>
-                    </div>
+                    </select>
+                </div>
+                <div class="flex flex-row">      
                     <div>
                         <label for="time" class="form-label">Time</label>
                         <input type="time" class="form-control" id="time" name="time" required>

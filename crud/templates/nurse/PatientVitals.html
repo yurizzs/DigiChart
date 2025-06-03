@@ -1,0 +1,50 @@
+{% extends 'layout/base.html' %}
+
+{% block 'title' %} Vital Signs List {% endblock 'title' %}
+
+{% block 'content' %}
+{% include 'include/NurseSidebar.html' %}
+{% include 'include/toastMessage.html' %}
+
+<div class="p-2 sm:ml-64 mt-16 md:mt-14">
+    <div class="mb-4">
+        <div class="mt-4">
+            <a href="/patient/list" class="text-blue-600 hover:underline">← Back to Patient List</a>
+        </div>
+        <h2 class="text-center text-2xl font-semibold mb-4">Vital Signs History</h2>
+        
+        <table class="table-auto w-full border border-gray-300 text-sm">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="border px-4 py-2">Date</th>
+                    <th class="border px-4 py-2">Time</th>
+                    <th class="border px-4 py-2">Temperature (°C)</th>
+                    <th class="border px-4 py-2">Pulse (bpm)</th>
+                    <th class="border px-4 py-2">Respiration</th>
+                    <th class="border px-4 py-2">Blood Pressure (mmHg)</th>
+                    <th class="border px-4 py-2">Oxygen Saturation (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vital in vitals %}
+                <tr class="text-center">
+                    <td class="border px-4 py-2">{{ vital.date }}</td>
+                    <td class="border px-4 py-2">{{ vital.time }}</td>
+                    <td class="border px-4 py-2">{{ vital.temperature }}</td>
+                    <td class="border px-4 py-2">{{ vital.pulse }}</td>
+                    <td class="border px-4 py-2">{{ vital.respiration }}</td>
+                    <td class="border px-4 py-2">{{ vital.blood_pressure }}</td>
+                    <td class="border px-4 py-2">{{ vital.o_sat }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center text-gray-500 py-4">No vital signs recorded.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% endblock 'content' %}
