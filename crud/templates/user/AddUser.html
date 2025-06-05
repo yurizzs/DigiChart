@@ -6,6 +6,7 @@
 
 {% include 'include/sidebar.html' %}
 {% include 'include/toastMessage.html' %}
+{% include 'chatbot/chatbot.html' %}
 <div class="p-2 sm:ml-64 mt-16 md:mt-14">
     <form action="/user/add" method="post">
         {% csrf_token %}
@@ -31,7 +32,6 @@
                 <div class="relative z-0 w-full mb-5 group">
                     <label for="role">Role</label>
                     <select name="role" id="role" class="" required>
-                        <option value="">Role</option>
                         <option value="">Select a Role</option>
 
                         {% for position, role in role_choices %}

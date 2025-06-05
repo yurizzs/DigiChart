@@ -6,6 +6,7 @@
 
 {% include 'include/NurseSidebar.html' %}
 {% include 'include/toastMessage.html' %}
+{% include 'chatbot/chatbot.html' %}
 <div class="p-2 sm:ml-64 mt-16 md:mt-14">
     <form action="/patient/add" method="post">
         {% csrf_token %}

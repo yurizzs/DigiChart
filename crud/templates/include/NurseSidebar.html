@@ -1,17 +1,18 @@
 {% load static %}
+{% include 'chatbot/chatbot.html' %}
 
-<aside class="fixed top-0 h-full w-[95px] hover:w-[260px] transition-all duration-300 bg-[#161a2d] flex flex-col p-7 overflow-hidden group">
+<aside class="fixed top-0 h-full w-[95px] hover:w-[260px] transition-all duration-300 bg-[#1f81a0] flex flex-col p-7 overflow-hidden group">
     <!-- Header -->
     <div class="flex justify-center items-center fixed">
         <img src="{% static '/image/digichart.jpg' %}" alt="logo" class="w-[42px] rounded-full" />
-        <h2 class="text-white text-xl font-semibold ml-6 whitespace-nowrap group-hover:block">DigiChart</h2>
+        <h2 class="text-white text-xl font-semibold ml-6 whitespace-nowrap hidden group-hover:block ">DigiChart</h2>
     </div>
 
     <!-- Links -->
-    <ul class="mt-6 flex-1 scrollbar-hide">
+    <ul class="flex-1 scrollbar-hide gap-2 flex flex-col">
         <!-- Section Title -->
         <li class="mt-10">
-            <h4 class="text-white font-medium relative mb-10">
+            <h4 class="text-white font-medium relative mb-0 mt-10">
                 <div class="absolute top-1/2 left-0 w-full h-0.5 bg-indigo-500"></div>
             </h4>
         </li>
@@ -19,15 +20,15 @@
         <li><a href="/nurse/dashboard" class="flex items-center gap-9 text-white font-medium whitespace-nowrap px-2 py-5 rounded hover:bg-white hover:text-[#161a2d] transition"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
 
         <!-- Section Title -->
-        <li class="-mt-1.5 mb-4">
-            <h4 class="text-white font-medium relative mb-2">
+        <li class="-mt-1.5 mb-2">
+            <h4 class="text-white font-medium relative mb-1">
                 <div class="absolute top-1/2 left-0 w-full h-0.5 bg-indigo-500"></div>
             </h4>
         </li>
 
-        <li><a href="/patient/add" class="flex items-center gap-9 text-white font-medium whitespace-nowrap px-2 py-5 rounded hover:bg-white hover:text-[#161a2d] transition"><span class="material-symbols-outlined">folder</span>Add Patient</a></li>
-        <li><a href="/vitals/add" class="flex items-center gap-9 text-white font-medium whitespace-nowrap px-2 py-5 rounded hover:bg-white hover:text-[#161a2d] transition"><span class="material-symbols-outlined">move_up</span>Add Vital Sign</a></li>
-        <li><a href="/patient/list" class="flex items-center gap-9 text-white font-medium whitespace-nowrap px-2 py-5 rounded hover:bg-white hover:text-[#161a2d] transition"><span class="material-symbols-outlined">groups</span>Patients List</a></li>
+        <li><a href="/patient/add" class="flex items-center gap-9 text-[#161a2d] font-medium whitespace-nowrap px-2 py-5 rounded hover:bg-[#84e5ff] hover:text-[#161a2d] transition  group menu-item"><span class="material-symbols-outlined">folder</span>Add Patient</a></li>
+        <li><a href="/vitals/add" class="flex items-center gap-9 text-[#161a2d] font-medium whitespace-nowrap px-2 py-5 rounded hover:bg-[#84e5ff] hover:text-[#161a2d] transition group menu-item"><span class="material-symbols-outlined">move_up</span>Add Vital Sign</a></li>
+        <li><a href="/patient/list" class="flex items-center gap-9 text-[#161a2d] font-medium whitespace-nowrap px-2 py-5 rounded hover:bg-[#84e5ff] hover:text-[#161a2d] transition group menu-item"><span class="material-symbols-outlined hover:text-[#161a2d]">groups</span>Patients List</a></li>
     </ul>
 
     <!-- User -->

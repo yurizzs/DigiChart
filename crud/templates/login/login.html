@@ -1,0 +1,45 @@
+{% extends 'layout/base.html' %}
+
+{% block 'title' %}Welcome to DigiChart{% endblock 'title' %}
+
+{% block 'content' %}
+{% include 'include/toastMessage.html' %}
+
+<div class="flex flex-col gap-10 justify-center items-center">
+    <div>
+        <h1 class="text-black font-black">Welcome</h1>
+        <img src="{% static '/image/digichart.jpg'}" alt="logo">
+    </div>
+    <div>
+        <form class="mt-8 space-y-6" method="POST">
+            {% csrf_token %}
+            <div>
+                <div>
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" required>
+                </div>
+                <div>
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" required>
+                </div>
+                <div>
+                    <label for="role">Role</label>
+                    <select name="role" id="role">
+                        <option value="">Select a Role</option>
+                        
+                        {% for position, role in role_choices  %}
+                            <option value="{{ position }}">{{ role }}</option>
+                        {% endfor %}
+                            
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="">Log in</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock 'content' %}
