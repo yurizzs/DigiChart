@@ -12,6 +12,7 @@ class User(models.Model):
     ]
     
     ROLE_CHOICES = [
+        ('A', 'Admin'),
         ('N', 'Nurse'),
         ('D', 'Doctor')
     ]
@@ -97,6 +98,9 @@ class Patient(models.Model):
         return ' '.join(name)
     
 class VitalSigns(models.Model):
+    class Meta:
+        db_table = 'tbl_VitalSigns'
+    
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='vitals')
     temperature = models.DecimalField(max_digits=4, decimal_places=2)
     pulse = models.PositiveIntegerField()
