@@ -6,11 +6,11 @@
 
 {% include 'include/NurseSidebar.html' %}
 {% include 'include/toastMessage.html' %}
-{% include 'chatbot/chatbot.html' %}
+
 
 <div class="p-2 sm:ml-64 mt-16 md:mt-14">
     <div class="mb-4">
-        <form action="/patient/list" method="GET">
+        <form action="/patient/list/" method="GET">
             <input type="text" name="search" placeholder="Search patient" value="{{ search_query }}" >
             <button type="submit" >Search</button> 
             {% if search_query %}

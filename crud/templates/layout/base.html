@@ -6,13 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static '/css/output.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <title>{% block 'title' %}{% endblock 'title' %}</title>
 </head>
 <body>
     {% block 'content' %} {% endblock 'content' %}
-
+    {% if not hide_chatbot %}
+        {% include 'chatbot/chatbot.html' %}
+    {% endif %}
     <script src="{% static 'js/auto_hide_toast.js' %}"></script>
-    <script src="{% static 'js/chatbot.js' %}"></script>
     <script src="{% static 'js/highlight.js' %}"></script>
 </body>
 </html>

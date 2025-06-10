@@ -7,16 +7,88 @@ from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.db.models.functions import TruncDate
 from datetime import date
-from django.contrib.auth.decorators import login_required, user_passes_test
+import re
+from django.http import JsonResponse
 
 # Create your views here.
 
-def get_current_user(request):
-    if request.user.is_authenticated:
+def custom_login_view(request, role, template_name):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        print(f"DEBUG: Login attempt - Username: {username}, Role: {role}")
+
         try:
-            return User.objects.get(username=request.user.username)
+            # Find the user directly
+            user = User.objects.get(username=username)
+            print(f"DEBUG: User found: {user.username}")
+            
+            # Check password using check_password
+            if check_password(password, user.password):
+                print(f"DEBUG: Password correct")
+                # Check role
+                if user.role.upper() == role.upper():
+                    print(f"DEBUG: Role matches")
+                    # Set session data
+                    request.session['username'] = user.username
+                    request.session['role'] = user.role
+                    request.session['is_authenticated'] = True
+                    
+                    # Redirect based on role
+                    if role.upper() == 'A':
+                        return redirect('/admin/dashboard/')
+                    elif role.upper() == 'D':
+                        return redirect('/doctor/dashboard/')
+                    elif role.upper() == 'N':
+                        return redirect('/nurse/dashboard/')
+                else:
+                    print(f"DEBUG: Role mismatch - User role: {user.role}, Expected: {role}")
+                    messages.error(request, "You are not authorized for this role.")
+            else:
+                print(f"DEBUG: Password incorrect")
+                messages.error(request, "Invalid username or password.")
+        except User.DoesNotExist:
+            print(f"DEBUG: User not found")
+            messages.error(request, "Invalid username or password.")
+
+    return render(request, template_name, {'role': role, 'hide_chatbot': True})
+
+
+def home_page(request):
+    try:
+        return render(request, 'login/login.html', {'hide_chatbot': True})
+    except Exception as e:
+        return HttpResponse(f'Error: {e}')
+    
+def nurse_login(request):
+    try:
+        return custom_login_view(request, 'N', 'login/nurse_login.html')
+    except Exception as e:
+        return HttpResponse(f'Error: {e}')
+    
+def admin_login(request):
+    try:
+        return custom_login_view(request, 'A', 'login/admin_login.html')
+    except Exception as e:
+        return HttpResponse(f'Error: {e}')
+    
+def doctor_login(request):
+    try:
+        return custom_login_view(request, 'D', 'login/doctor_login.html')
+    except Exception as e:
+        return HttpResponse(f'Error: {e}')
+
+def logout_view(request):
+    request.session.flush()
+    return redirect('/login/')
+
+def get_current_user(request):
+    if request.session.get('is_authenticated'):
+        try:
+            return User.objects.get(username=request.session['username'])
         except User.DoesNotExist:
             return None
+    return None
 
 def add_user(request):
     try:
@@ -72,10 +144,10 @@ def add_user(request):
                 address=address,
                 contact_number=contact_number,
                 username=username,
-                password=make_password(password)    
+                password=make_password(password) 
             ).save()
             messages.success(request, "User added successfully.")
-            return redirect('/user/list')      
+            return redirect('/user/list/')      
         
         return render(request, 'user/AddUser.html', base_data)
     
@@ -151,6 +223,39 @@ def delete_user(request, user_id):
         return redirect('/user/list')
     except Exception as e:
         return HttpResponse(f'Error ulit: {e}')
+    
+def changepass(request, user_id):
+    try:
+        if request.method == 'POST':
+            user = User.objects.get(pk=user_id)
+            current_password = request.POST.get('current_password')
+            password = request.POST.get('password')
+            confirmPassword = request.POST.get('confirm_password')
+            
+            if not check_password(current_password, user.password):
+                messages.error(request, 'Current password is incorrect.')
+                return redirect(f'/user/changepass/{user_id}')
+            
+            if not password and not confirmPassword:
+                messages.error(request, 'Please fill out both fields')
+                return redirect(f'/user/changepass/{user_id}')
+            
+            if password != confirmPassword:
+                messages.error(request, 'New password and confirm password doesn`t match')
+                return redirect(f'/user/changepass/{user_id}')
+            
+            user.password = make_password(password)
+            user.save()
+            messages.success(request, 'Password successfully change!')
+            return redirect('/user/list')
+        else:
+            user = User.objects.get(pk=user_id)
+            return render(request, 'user/ChangePass.html', {'user': user})
+    except User.DoesNotExist:
+        messages.error(request, "User not found.")
+        return redirect('/user/list')
+    except Exception as e:
+        return HttpResponse(f'Error: {e}')
    
 def add_patient(request):
     try:
@@ -433,3 +538,74 @@ def admin_dashboard(request):
     }
 
     return render(request, 'dashboard/AdminDash.html', context)
+
+def chatbot_query(request):
+    query = request.GET.get("q", "").strip().lower()
+    print(f"Received query: {query}")  # Debug print
+
+    # Check for BP
+    match_bp = re.search(r'show last bp for (.+)', query)
+    # Check for temperature
+    match_temp = re.search(r'show last temperature for (.+)', query)
+    match_pulse = re.search(r'show last pulse for (.+)', query)
+    match_respiration = re.search(r'show last respiration for (.+)', query)
+    match_o_sat = re.search(r'show last osat for (.+)', query)
+
+    match = match_bp or match_temp or match_pulse or match_respiration or match_o_sat
+
+    if match:
+        name = match.group(1).strip().title()
+        print(f"Extracted name: {name}")
+
+        name_parts = name.split()
+        if len(name_parts) < 2:
+            return JsonResponse({"response": "Please provide both first and last name."})
+
+        first_name = name_parts[0]
+        last_name = name_parts[-1]
+
+        patient = Patient.objects.filter(
+            first_name__icontains=first_name,
+            last_name__icontains=last_name
+        ).first()
+
+        if not patient and len(name_parts) > 2:
+            middle_name = ' '.join(name_parts[1:-1])
+            patient = Patient.objects.filter(
+                first_name__icontains=first_name,
+                middle_name__icontains=middle_name,
+                last_name__icontains=last_name
+            ).first()
+
+        if not patient:
+            return JsonResponse({"response": f"No patient found with name '{name}'."})
+
+        last_vitals = patient.vitals.order_by('-date', '-time').first()
+
+        if last_vitals:
+            if match_bp:
+                return JsonResponse({
+                    "response": f"{patient.full_name}'s last BP was {last_vitals.blood_pressure} on {last_vitals.date.strftime('%B %d')}."
+                })
+            elif match_temp:
+                return JsonResponse({
+                    "response": f"{patient.full_name}'s last temperature was {last_vitals.temperature} on {last_vitals.date.strftime('%B %d')}."
+                })
+            elif match_pulse:
+                return JsonResponse({
+                    "response": f"{patient.full_name}'s last pulse rate was {last_vitals.pulse} on {last_vitals.date.strftime('%B %d')}."
+                })
+            elif match_respiration:
+                return JsonResponse({
+                    "response": f"{patient.full_name}'s last respiration was {last_vitals.respiration} on {last_vitals.date.strftime('%B %d')}."
+                })
+            elif match_o_sat:
+                return JsonResponse({
+                    "response": f"{patient.full_name}'s last oxygen saturation was {last_vitals.o_sat} on {last_vitals.date.strftime('%B %d')}."
+                })
+        else:
+            return JsonResponse({"response": f"No vitals found for {patient.full_name}."})
+
+    return JsonResponse({
+        "response": "Sorry, I didn't understand that. Try: 'Show last BP for Eva Murphy' or 'Show last temperature for Eva Murphy'."
+    })

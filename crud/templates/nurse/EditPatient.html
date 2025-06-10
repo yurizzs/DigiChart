@@ -5,10 +5,10 @@
 {% block 'content' %}
 
 {% include 'include/NurseSidebar.html' %}
-{% include 'chatbot/chatbot.html' %}
+
 {% include 'include/toastMessage.html' %}
 <div class="p-2 sm:ml-64 mt-16 md:mt-14">
-    <form action="/patient/edit/{{ patient.patient_id }}" method="post">
+    <form action="/patient/edit/{{ patient.patient_id }}/" method="post">
         {% csrf_token %}
         <div class="grid grid-cols-2 gap-4 mx-auto">
             <div class="col-span-2 md:col-span-1">

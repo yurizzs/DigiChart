@@ -1,17 +1,44 @@
 {% load static %}
-<!-- Chatbot Toggle Button -->
-<button id="chatToggle" class="fixed bottom-6 right-6 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700">
+<button id="chatToggle" class="fixed bottom-6 right-6 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 z-50 cursor-pointer">
     💬
 </button>
-<!-- Chatbot Popup -->
-<div id="chatPopup" class="fixed bottom-20 right-6 w-72 bg-white border rounded-lg shadow-lg hidden flex flex-col">
+<div id="chatPopup" class="fixed bottom-20 right-6 w-72 bg-white border rounded-lg shadow-lg hidden flex flex-col z-50">
     <div class="p-3 bg-blue-600 text-white text-xl font-semibold rounded-t flex flex-row justify-center items-center">
         <img src="{% static '/image/digichart.jpg' %}" alt="logo" class="w-[42px] rounded-full mr-4" />
-    
-        DigiChart Assistant</div>
+        DigiChart Assistant
+    </div>
     <div id="chatResponse" class="p-3 text-sm text-gray-800 h-24 overflow-y-auto border-b"></div>
     <div class="p-3">
         <input type="text" id="chatInput" class="w-full border px-2 py-1 rounded text-sm" placeholder="Ask something..." />
         <button onclick="sendQuery()" class="mt-2 w-full bg-blue-600 text-white py-1 rounded hover:bg-blue-700 text-sm">Send</button>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const toggle = document.getElementById('chatToggle');
+    const popup = document.getElementById('chatPopup');
+
+    if (toggle && popup) {
+        toggle.addEventListener('click', function () {
+            popup.classList.toggle('hidden');
+        });
+    }
+});
+
+function sendQuery() {
+    const input = document.getElementById('chatInput');
+    const responseBox = document.getElementById('chatResponse');
+    const query = input.value;
+
+    if (!query.trim()) return;
+
+    fetch(`/chatbot/query/?q=${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(data => {
+            responseBox.innerHTML += `<div class="mb-2">👩‍⚕️ ${data.response}</div>`;
+            input.value = '';
+            responseBox.scrollTop = responseBox.scrollHeight;
+        });
+}
+</script>
