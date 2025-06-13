@@ -16,9 +16,11 @@ urlpatterns = [
     path('vitals/info/<int:patient_id>/', views.patient_vitals),
     path('nurse/dashboard/', views.nurse_dashboard),
     path('admin/dashboard/', views.admin_dashboard),
+    path('doctor/dashboard/', views.doctor_dashboard),
     path('chatbot/query/', views.chatbot_query),
     path('login/nurse/', views.nurse_login),
     path('login/admin/', views.admin_login),
     path('login/doctor/', views.doctor_login),
+    path('logout/', views.logout_view),
     path('home/', views.home_page),
 ]

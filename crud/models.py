@@ -112,58 +112,15 @@ class VitalSigns(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-def custom_login_view(request, role, template_name):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        print(f"DEBUG: Login attempt - Username: {username}, Role: {role}")
-
-        try:
-            # Find the user directly
-            user = User.objects.get(username=username)
-            print(f"DEBUG: User found: {user.username}")
-            
-            # Check password
-            if check_password(password, user.password):
-                print(f"DEBUG: Password correct")
-                # Check role
-                if user.role.upper() == role.upper():
-                    print(f"DEBUG: Role matches")
-                    # Set session data
-                    request.session['username'] = user.username
-                    request.session['role'] = user.role
-                    request.session['is_authenticated'] = True
-                    request.session['user_id'] = user.user_id  # or user.pk
-                    
-                    # Redirect based on role
-                    if role.upper() == 'A':
-                        return redirect('/admin/dashboard/')
-                    elif role.upper() == 'D':
-                        return redirect('/doctor/dashboard/')
-                    elif role.upper() == 'N':
-                        return redirect('/nurse/dashboard/')
-                else:
-                    print(f"DEBUG: Role mismatch - User role: {user.role}, Expected: {role}")
-                    messages.error(request, "You are not authorized for this role.")
-            else:
-                print(f"DEBUG: Password incorrect")
-                messages.error(request, "Invalid username or password.")
-        except User.DoesNotExist:
-            print(f"DEBUG: User not found")
-            messages.error(request, "Invalid username or password.")
-
-    return render(request, template_name, {'role': role, 'hide_chatbot': True})
-
-def logout_view(request):
-    # Clear all session data
-    request.session.flush()
-    return redirect('/login/')
-
-def get_user_data(request):
-    if request.session.get('is_authenticated'):
-        try:
-            user = User.objects.get(username=request.session['username'])
-            return {'current_user': user}
-        except User.DoesNotExist:
-            return {'current_user': None}
-    return {'current_user': None}
+class Medication(models.Model):
+    
+    class Meta:
+        db_table = 'tbl_Medication'
+        
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='medication')
+    physician = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=False, related_name='patients_as_physician')
+    medication_name = models.CharField(max_length=100)
+    dosage = models.CharField(max_length=100)
+    frequency = models.CharField(max_length=100)
+    instructions = models.TextField(blank=True)
+    date_ordered = models.DateField(auto_now_add=True)

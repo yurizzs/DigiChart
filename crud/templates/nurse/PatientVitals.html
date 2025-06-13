@@ -1,50 +1,131 @@
 {% extends 'layout/base.html' %}
 
-{% block 'title' %} Vital Signs List {% endblock 'title' %}
+{% block 'title' %} Patient Vital Signs {% endblock 'title' %}
 
 {% block 'content' %}
 {% include 'include/NurseSidebar.html' %}
 {% include 'include/toastMessage.html' %}
 
-
-<div class="p-2 sm:ml-64 mt-16 md:mt-14">
-    <div class="mb-4">
-        <div class="mt-4">
-            <a href="/patient/list/" class="text-blue-600 hover:underline">← Back to Patient List</a>
+<div class="p-4 sm:ml-20 min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50">
+    <div class="max-w-6xl mx-auto py-6">
+        <!-- Back Button -->
+        <div class="mb-6">
+            <a href="/patient/list/" class="inline-flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span class="text-base font-medium">Back</span>
+            </a>
         </div>
-        <h2 class="text-center text-2xl font-semibold mb-4">Vital Signs History</h2>
-        
-        <table class="table-auto w-full border border-gray-300 text-sm">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="border px-4 py-2">Date</th>
-                    <th class="border px-4 py-2">Time</th>
-                    <th class="border px-4 py-2">Temperature (°C)</th>
-                    <th class="border px-4 py-2">Pulse (bpm)</th>
-                    <th class="border px-4 py-2">Respiration</th>
-                    <th class="border px-4 py-2">Blood Pressure (mmHg)</th>
-                    <th class="border px-4 py-2">Oxygen Saturation (%)</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for vital in vitals %}
-                <tr class="text-center">
-                    <td class="border px-4 py-2">{{ vital.date }}</td>
-                    <td class="border px-4 py-2">{{ vital.time }}</td>
-                    <td class="border px-4 py-2">{{ vital.temperature }}</td>
-                    <td class="border px-4 py-2">{{ vital.pulse }}</td>
-                    <td class="border px-4 py-2">{{ vital.respiration }}</td>
-                    <td class="border px-4 py-2">{{ vital.blood_pressure }}</td>
-                    <td class="border px-4 py-2">{{ vital.o_sat }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="7" class="text-center text-gray-500 py-4">No vital signs recorded.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
 
+        <!-- Header -->
+        <div class="text-center mb-6">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-red-500 to-pink-600 rounded-full mb-4 shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2 tracking-tight">Patient Vital Signs</h1>
+            <p class="text-base text-gray-600">View and manage patient vital signs records</p>
+        </div>
+
+        <!-- Patient Info Card -->
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden mb-6">
+            <div class="bg-gradient-to-r from-red-500 to-pink-600 p-5">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="p-3 bg-white/20 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-bold text-white">{{ patient.full_name }}</h2>
+                    </div>
+                    <a href="/vitals/add/" class="px-5 py-2.5 bg-white/20 hover:bg-white/30 rounded-lg text-white text-base font-medium transition-colors duration-200 flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        <span>Add New Record</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Date Selection Dropdown -->
+        <form method="get" class="mb-4 flex items-center space-x-4">
+            <label for="selected_date" class="text-sm font-medium text-gray-700">Select Date:</label>
+            <select name="selected_date" id="selected_date" onchange="this.form.submit()" class="border-gray-300 rounded-md shadow-sm px-3 py-1 focus:ring focus:ring-blue-200">
+                {% for date in date_options %}
+                    <option value="{{ date }}" {% if date == selected_date %}selected{% endif %}>
+                        {{ date|date:"M d, Y" }}
+                    </option>
+                {% endfor %}
+            </select>
+            <noscript><button type="submit" class="text-white bg-blue-600 px-3 py-1 rounded">Go</button></noscript>
+        </form>
+
+        <!-- ...existing code... -->
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">Time</th>
+                            <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">Temp (°C)</th>
+                            <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">Pulse</th>
+                            <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">Resp</th>
+                            <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">BP (mmHg)</th>
+                            <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider">O2 Sat (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for vital in vitals %}
+                        <tr class="hover:bg-gray-50 transition-colors duration-200">
+                            <td class="px-6 py-4 whitespace-nowrap text-base text-gray-700">
+                                {{ vital.date|date:"M d, Y" }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base text-gray-700">
+                                {{ vital.time|time:"H:i" }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base text-center text-gray-700">
+                                {{ vital.temperature }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base text-center text-gray-700">
+                                {{ vital.pulse }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base text-center text-gray-700">
+                                {{ vital.respiration }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base text-center text-gray-700">
+                                {{ vital.blood_pressure }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-base text-center text-gray-700">
+                                {{ vital.o_sat }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="mt-4 flex justify-between items-center">
+          {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="text-blue-500">← Previous</a>
+          {% else %}
+            <span></span>
+          {% endif %}
+        
+          <span class="text-sm text-gray-600">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        
+          {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="text-blue-500">Next →</a>
+          {% else %}
+            <span></span>
+          {% endif %}
+        </div>
     </div>
 </div>
 

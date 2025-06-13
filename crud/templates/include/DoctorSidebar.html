@@ -1,36 +1,46 @@
-{% extends 'layout/base.html' %}
-{% block 'title' %} Doctor Dashboard {% endblock 'title' %}
+{% load static %}
 
-{% block 'content' %}
-{% include 'include/DoctorSidebar.html' %}
-
-<div class="flex justify-center items-center h-screen">
-    <div class="grid grid-cols-2 grid-rows-2 sm:grid-cols-2 lg:grid-cols-2 gap-2 p-4">
-      <!-- Total Patients -->
-      <div class="bg-white shadow-md rounded-xl p-6 text-center grid-cols-1 grid-rows-1">
-        <h3 class="text-gray-500 text-sm font-medium">Total Patients</h3>
-        <p class="text-3xl font-bold text-blue-600">{{ total_patients }}</p>
-      </div>
-    
-      <!-- Total Physicians -->
-      <div class="bg-white shadow-md rounded-xl p-6 text-center grid-cols-2 grid-rows-1">
-        <h3 class="text-gray-500 text-sm font-medium">Total Physicians</h3>
-        <p class="text-3xl font-bold text-green-600">{{ total_physicians }}</p>
-      </div>
-    
-      <!-- Admissions Today -->
-      <div class="bg-white shadow-md rounded-xl p-6 text-center grid-cols-1 grid-rows-2">
-        <h3 class="text-gray-500 text-sm font-medium">Admissions Today</h3>
-        <p class="text-3xl font-bold text-yellow-600">{{ admissions_today }}</p>
-      </div>
-    
-      <!-- Total Nurses -->
-      <div class="bg-white shadow-md rounded-xl p-6 text-center grid-cols-2 grid-rows-2">
-        <h3 class="text-gray-500 text-sm font-medium">Total Nurses</h3>
-        <p class="text-3xl font-bold text-pink-600">{{ total_nurses }}</p>
-      </div>
+<aside class="fixed top-0 h-full w-[95px] hover:w-[260px] transition-all duration-300 bg-[#1f81a0] flex flex-col p-7 overflow-hidden group">
+    <!-- Header -->
+    <div class="flex justify-center items-center fixed">
+        <img src="{% static '/image/digichart.jpg' %}" alt="logo" class="w-[42px] rounded-full" />
+        <h2 class="text-white text-xl font-semibold ml-6 whitespace-nowrap hidden group-hover:block ">DigiChart</h2>
     </div>
-</div>
 
-{% endblock 'content' %}
+    <!-- Links -->
+    <ul class="flex-1 scrollbar-hide gap-2 flex flex-col">
+        <!-- Section Title -->
+        <li class="mt-10">
+            <h4 class="text-white font-medium relative mb-0 mt-10">
+                <div class="absolute top-1/2 left-0 w-full h-0.5 bg-indigo-500"></div>
+            </h4>
+        </li>
 
+        <li><a href="/doctor/dashboard" class="flex items-center gap-9 text-white font-medium whitespace-nowrap px-2 py-5 rounded hover:bg-white hover:text-[#161a2d] transition"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
+
+        <!-- Section Title -->
+        <li class="-mt-1.5 mb-2">
+            <h4 class="text-white font-medium relative mb-1">
+                <div class="absolute top-1/2 left-0 w-full h-0.5 bg-indigo-500"></div>
+            </h4>
+        </li>
+
+        <li><a href="/patient/add" class="flex items-center gap-9 text-white font-medium whitespace-nowrap px-2 py-5 rounded hover:bg-white hover:text-[#161a2d] transition  group menu-item"><span class="material-symbols-outlined">folder</span>Add Patient</a></li>
+        <li><a href="/vitals/add" class="flex items-center gap-9 text-white font-medium whitespace-nowrap px-2 py-5 rounded hover:bg-white hover:text-[#161a2d] transition group menu-item"><span class="material-symbols-outlined">move_up</span>Add Vital Sign</a></li>
+        <li><a href="/patient/list" class="flex items-center gap-9 text-white font-medium whitespace-nowrap px-2 py-5 rounded hover:bg-white hover:text-[#161a2d] transition group menu-item"><span class="material-symbols-outlined hover:text-[#161a2d]">groups</span>Patients List</a></li>
+    </ul>
+
+    <!-- User -->
+    <div class="group flex items-center rounded transition gap-7">
+        <img src="{% static '/image/digichart.jpg' %}" alt="Profile Image" class="w-[42px] rounded-full" />
+        <div class="flex flex-col transition-all duration-200">
+            <h3 class="text-[#f3f3f3] font-semibold text-md">
+                {% if current_user %}
+                    {{ current_user.full_name }}
+                {% endif %}
+            </h3>
+            {% comment %} <span class="text-xs text-[#f3f3f3] font-semibold whitespace-nowrap">Web Developer</span> {% endcomment %}
+            <a href="/logout/" class="text-sm text-[#f3f3f3] font-semibold whitespace-nowrap">Sign Out</a>
+        </div>
+    </div>
+</aside>

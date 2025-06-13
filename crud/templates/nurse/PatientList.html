@@ -7,51 +7,169 @@
 {% include 'include/NurseSidebar.html' %}
 {% include 'include/toastMessage.html' %}
 
-
-<div class="p-2 sm:ml-64 mt-16 md:mt-14">
-    <div class="mb-4">
-        <form action="/patient/list/" method="GET">
-            <input type="text" name="search" placeholder="Search patient" value="{{ search_query }}" >
-            <button type="submit" >Search</button> 
+<div class="p-4 sm:ml-64 mt-16 md:mt-14 bg-gradient-to-br from-cyan-50 via-white to-cyan-100 min-h-screen">
+    <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <div class="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800">Patient Directory</h2>
+        </div>
+        <form action="/patient/list/" method="GET" class="flex items-center space-x-2">
+            <div class="relative">
+                <input type="text" name="search" placeholder="Search patient by name..." value="{{ search_query }}"
+                       class="block w-64 p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-cyan-500 focus:border-cyan-500 transition duration-150 ease-in-out shadow-sm">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                    </svg>
+                </div>
+            </div>
+            <button type="submit"
+                    class="px-4 py-2 text-sm font-medium text-white bg-cyan-600 rounded-lg border border-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cyan-300 transition duration-150 ease-in-out shadow">
+                Search
+            </button>
             {% if search_query %}
-                <a href="/user/list" >Clear</a>
+                <a href="/patient/list"
+                   class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg border border-gray-300 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 transition duration-150 ease-in-out">
+                    Clear
+                </a>
             {% endif %}
         </form>
     </div>
-    <div class="relative overflow-x-auto rounded-sm shadow-sm">
-        <table class="w-full">
-            <thead>
+    <div class="relative overflow-x-auto rounded-2xl shadow-lg border border-gray-200 bg-gradient-to-br from-cyan-50 via-white to-cyan-100">
+        <table class="w-full text-sm text-left text-gray-700">
+            <thead class="text-xs text-cyan-800 uppercase bg-cyan-100 border-b border-cyan-200">
                 <tr>
-                    <th class="px-6 py-3">Full Name</th>
-                    <th class="px-6 py-3">Admitting Physician</th>
-                    <th class="px-6 py-3">Age</th>
-                    <th class="px-6 py-3">Sex</th>
-                    <th class="px-6 py-3">Marital Status</th>
-                    <th class="px-6 py-3">Date of Birth</th>
-                    <th class="px-6 py-3">Action</th>
+                    <th scope="col" class="px-6 py-3">Full Name</th>
+                    <th scope="col" class="px-6 py-3">Admitting Physician</th>
+                    <th scope="col" class="px-6 py-3">Age</th>
+                    <th scope="col" class="px-6 py-3">Sex</th>
+                    <th scope="col" class="px-6 py-3">Marital Status</th>
+                    <th scope="col" class="px-6 py-3">Date of Birth</th>
+                    <th scope="col" class="px-6 py-3 text-center">Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for patient in patients %}
-                    <tr>
-                        <td class="px-6 py-3">{{ patient.full_name}}</td>
-                        <td class="px-6 py-3">{{ patient.physician.full_name }}</td>
-                        <td class="px-6 py-3">{{ patient.age }}</td>
-                        <td class="px-6 py-3">{{ patient.get_gender_display }}</td>
-                        <td class="px-6 py-3">{{ patient.get_status_display }}</td>
-                        <td class="px-6 py-3">{{ patient.birth_date|date:"F d, Y"}}</td>
-                        <td class="px-6 py-3">
-                            <div>
-                                <a href="/patient/edit/{{ patient.patient_id }}">Edit</a>
-                                <a href="/patient/information/{{ patient.patient_id }}">Show Information</a>
-                                <a href="/vitals/info/{{ patient.patient_id }}">Show Vitals</a>
+                    <tr class="bg-white border-b hover:bg-cyan-50 transition">
+                        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ patient.full_name }}</td>
+                        <td class="px-6 py-4">{{ patient.physician.full_name }}</td>
+                        <td class="px-6 py-4">{{ patient.age }}</td>
+                        <td class="px-6 py-4">{{ patient.get_gender_display }}</td>
+                        <td class="px-6 py-4">{{ patient.get_status_display }}</td>
+                        <td class="px-6 py-4">{{ patient.birth_date|date:"F d, Y" }}</td>
+                        <td class="px-6 py-4 text-center">
+                            <div class="flex items-center justify-center space-x-2">
+                                <a href="/patient/edit/{{ patient.patient_id }}"
+                                   class="inline-flex items-center px-3 py-1 rounded-lg bg-blue-50 text-blue-700 font-semibold hover:bg-blue-100 transition text-xs shadow-sm border border-blue-200">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536M9 11l6 6M3 21h6l11-11a2.828 2.828 0 00-4-4L5 17v4z"/>
+                                    </svg>
+                                    Edit
+                                </a>
+                                <a href="/patient/information/{{ patient.patient_id }}"
+                                   class="inline-flex items-center px-3 py-1 rounded-lg bg-indigo-50 text-indigo-700 font-semibold hover:bg-indigo-100 transition text-xs shadow-sm border border-indigo-200">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z"/>
+                                    </svg>
+                                    Info
+                                </a>
+                                <a href="/vitals/info/{{ patient.patient_id }}"
+                                   class="inline-flex items-center px-3 py-1 rounded-lg bg-green-50 text-green-700 font-semibold hover:bg-green-100 transition text-xs shadow-sm border border-green-200">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    Vitals
+                                </a>
                             </div>
                         </td>
                     </tr>
-                {% endfor %}                   
+                {% empty %}
+                    <tr class="bg-white border-b">
+                        <td colspan="7" class="px-6 py-4 text-center text-gray-500">No patients found.</td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
+    <!-- pagination -->
+    <nav class="mt-4 mb-8">
+        <ul class="inline-flex -space-x-px text-sm w-full justify-center">
+            {% if page_obj.has_previous %}
+            <li>
+                <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                   class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-cyan-100 hover:text-cyan-700 transition">
+                    &laquo; Previous
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li>
+                    <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                       class="flex items-center justify-center px-3 h-8 text-white border border-cyan-600 bg-cyan-600 hover:bg-cyan-700 hover:text-white font-bold transition">
+                        {{ num }}
+                    </a>
+                </li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li>
+                    <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                       class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-cyan-100 hover:text-cyan-700 transition">
+                        {{ num }}
+                    </a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li>
+                <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-cyan-100 hover:text-cyan-700 transition">
+                    Next &raquo;
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
 </div>
+
+<style>
+/* Responsive table for mobile */
+@media (max-width: 900px) {
+    table thead { display: none; }
+    table, table tbody, table tr, table td { display: block; width: 100%; }
+    table tr { margin-bottom: 1.5rem; border-bottom: 2px solid #e0f2fe; }
+    table td { text-align: right; position: relative; padding-left: 50%; }
+    table td:before {
+        position: absolute;
+        left: 1rem;
+        top: 0.75rem;
+        width: 45%;
+        white-space: nowrap;
+        font-weight: bold;
+        color: #0891b2;
+        text-align: left;
+        content: attr(data-label);
+    }
+    .flex.items-center.justify-center.space-x-2 { justify-content: flex-end; }
+}
+</style>
+<script>
+    // Add data-labels for mobile responsive table
+    document.addEventListener("DOMContentLoaded", function() {
+        if(window.innerWidth <= 900) {
+            document.querySelectorAll("table tbody tr").forEach(function(row) {
+                var labels = ["Full Name", "Admitting Physician", "Age", "Sex", "Marital Status", "Date of Birth", "Action"];
+                row.querySelectorAll("td").forEach(function(td, i) {
+                    td.setAttribute("data-label", labels[i]);
+                });
+            });
+        }
+    });
+</script>
 
 {% endblock 'content' %}

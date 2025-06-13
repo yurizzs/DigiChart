@@ -1,6 +1,6 @@
 {% load static %}
 
-<aside class="fixed top-0 h-full w-[95px] hover:w-[260px] transition-all duration-300 bg-[#161a2d] flex flex-col p-7 overflow-hidden group">
+<aside class="fixed top-0 h-full w-[95px] hover:w-[260px] transition-all duration-300 bg-[#1f81a0] flex flex-col p-7 overflow-hidden group">
     <!-- Header -->
     <div class="flex justify-center items-center fixed">
       <img src="{% static '/image/digichart.jpg' %}" alt="logo" class="w-[42px] rounded-full" />
@@ -27,29 +27,19 @@
 
       <li><a href="/user/add/" class="flex items-center gap-9 text-white font-medium whitespace-nowrap px-2 py-5 rounded hover:bg-white hover:text-[#161a2d] transition"><span class="material-symbols-outlined">folder</span>Add Employee</a></li>
       <li><a href="/user/list/" class="flex items-center gap-9 text-white font-medium whitespace-nowrap px-2 py-5 rounded hover:bg-white hover:text-[#161a2d] transition"><span class="material-symbols-outlined">groups</span>Employee List</a></li>
-      {% comment %} <li><a href="#" class="flex items-center gap-5 text-white font-medium whitespace-nowrap px-2 py-3 rounded hover:bg-white hover:text-[#161a2d] transition"><span class="material-symbols-outlined">move_up</span>Transfer</a></li>
-      <li><a href="#" class="flex items-center gap-5 text-white font-medium whitespace-nowrap px-2 py-3 rounded hover:bg-white hover:text-[#161a2d] transition"><span class="material-symbols-outlined">flag</span>All Reports</a></li>
-      <li><a href="#" class="flex items-center gap-5 text-white font-medium whitespace-nowrap px-2 py-3 rounded hover:bg-white hover:text-[#161a2d] transition"><span class="material-symbols-outlined">notifications_active</span>Notifications</a></li> {% endcomment %}
-
-      <!-- Section Title -->
-      {% comment %} <li class="mt-4">
-        <h4 class="text-white font-medium relative mb-2">
-          <span class="opacity-0 group-hover:opacity-100 transition">Account</span>
-          <div class="absolute top-1/2 left-0 w-full h-px bg-indigo-500 scale-x-100 group-hover:scale-x-0 transition-transform duration-300 origin-right"></div>
-        </h4>
-      </li>
-
-      <li><a href="#" class="flex items-center gap-5 text-white font-medium whitespace-nowrap px-2 py-3 rounded hover:bg-white hover:text-[#161a2d] transition"><span class="material-symbols-outlined">account_circle</span>Profile</a></li>
-      <li><a href="#" class="flex items-center gap-5 text-white font-medium whitespace-nowrap px-2 py-3 rounded hover:bg-white hover:text-[#161a2d] transition"><span class="material-symbols-outlined">settings</span>Settings</a></li>
-      <li><a href="#" class="flex items-center gap-5 text-white font-medium whitespace-nowrap px-2 py-3 rounded hover:bg-white hover:text-[#161a2d] transition"><span class="material-symbols-outlined">logout</span>Logout</a></li>
-    </ul> {% endcomment %}
+    </ul>
 
     <!-- User -->
-    {% comment %} <div class="mt-auto -ml-2 px-2 py-3 group-hover:flex bg-white rounded items-center transition">
-      <img src="images/profile-img.jpg" alt="Profile Image" class="w-[42px] rounded-full border-2 border-white" />
-      <div class="ml-4 whitespace-nowrap">
-        <h3 class="text-[#161a2d] font-semibold text-sm">Eva Murphy</h3>
-        <span class="text-xs text-[#161a2d] font-semibold">Web Developer</span>
-      </div>
-    </div> {% endcomment %}
+    <div class="group flex items-center rounded transition gap-7">
+        <img src="{% static '/image/digichart.jpg' %}" alt="Profile Image" class="w-[42px] rounded-full" />
+        <div class="flex flex-col transition-all duration-200">
+            <h3 class="text-[#f3f3f3] font-semibold text-md">
+                {% if current_user %}
+                    {{ current_user.full_name }}
+                {% endif %}
+            </h3>
+            {% comment %} <span class="text-xs text-[#f3f3f3] font-semibold whitespace-nowrap">Web Developer</span> {% endcomment %}
+            <a href="/logout/" class="text-sm text-[#f3f3f3] font-semibold whitespace-nowrap">Sign Out</a>
+        </div>
+    </div>
   </aside>

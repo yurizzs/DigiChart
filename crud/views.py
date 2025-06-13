@@ -6,7 +6,8 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.db.models.functions import TruncDate
-from datetime import date
+from datetime import date, timedelta
+from django.db.models import Count
 import re
 from django.http import JsonResponse
 
@@ -80,7 +81,7 @@ def doctor_login(request):
 
 def logout_view(request):
     request.session.flush()
-    return redirect('/login/')
+    return redirect('/home/')
 
 def get_current_user(request):
     if request.session.get('is_authenticated'):
@@ -92,9 +93,11 @@ def get_current_user(request):
 
 def add_user(request):
     try:
+        current_user = get_current_user(request)
         base_data = {
             'gender_choices': User.GENDER_CHOICES,
             'role_choices': User.ROLE_CHOICES,
+            'current_user': current_user,
         }   
         
         if request.method == 'POST':
@@ -168,13 +171,24 @@ def user_list(request):
                 role__icontains=search_query
             )
         
-        return render(request, 'user/UserList.html', {'users': user_list})
+        paginator = Paginator(user_list, 5)
+        page_number = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_number)
+        current_user = get_current_user(request)
+        
+        return render(request, 'user/UserList.html', {
+            'users': page_obj,  # Changed from user_list to page_obj
+            'current_user': current_user,
+            'page_obj': page_obj,
+            'search_query': search_query
+        })
     except Exception as e:
         return HttpResponse(f'Error alert: {e}')
     
 def edit_user(request, user_id):
     try:
         userObj = User.objects.get(pk=user_id)
+        current_user = get_current_user(request)
         
         if request.method == 'POST':    
             full_name = request.POST.get('full_name')
@@ -205,6 +219,7 @@ def edit_user(request, user_id):
             'user': userObj,
             'gender_choices': User.GENDER_CHOICES,
             'role_choices': User.ROLE_CHOICES,
+            'current_user': current_user
         })
     except Exception as e:
         return HttpResponse(f'Error ulit:{e}')
@@ -212,12 +227,13 @@ def edit_user(request, user_id):
 def delete_user(request, user_id):
     try:
         user = User.objects.get(pk=user_id)
+        current_user = get_current_user(request)
         if request.method == 'POST':
             user.delete()
             messages.success(request, f'User {user.username} has been deleted successfully.')
             return redirect('/user/list')
         else:
-            return render (request, 'user/DeleteUser.html', {'user': user})
+            return render (request, 'user/DeleteUser.html', {'user': user, 'current_user': current_user})
     except User.DoesNotExist:
         messages.error(request, 'User not found.')
         return redirect('/user/list')
@@ -228,6 +244,7 @@ def changepass(request, user_id):
     try:
         if request.method == 'POST':
             user = User.objects.get(pk=user_id)
+            current_user = get_current_user(request)
             current_password = request.POST.get('current_password')
             password = request.POST.get('password')
             confirmPassword = request.POST.get('confirm_password')
@@ -250,7 +267,7 @@ def changepass(request, user_id):
             return redirect('/user/list')
         else:
             user = User.objects.get(pk=user_id)
-            return render(request, 'user/ChangePass.html', {'user': user})
+            return render(request, 'user/ChangePass.html', {'user': user, 'current_user': current_user})
     except User.DoesNotExist:
         messages.error(request, "User not found.")
         return redirect('/user/list')
@@ -259,13 +276,16 @@ def changepass(request, user_id):
    
 def add_patient(request):
     try:
+        current_user = get_current_user(request)
         base_data = {
             'gender_choices': User.GENDER_CHOICES,
             'status_choices': Patient.STATUS_CHOICES,
             'blood_types': Patient.BLOOD_TYPES,
             'physicians': User.objects.filter(role='D'),
             'nurses': User.objects.filter(role='N'),
+            'current_user': current_user,
         }
+        
         if request.method == 'POST':
             first_name = request.POST.get('first_name')
             middle_name = request.POST.get('middle_name')
@@ -343,6 +363,7 @@ def patient_list(request):
     try:
         search_query = request.GET.get('search', '')
         patient_list = Patient.objects.all()
+        current_user = get_current_user(request)
         
         if search_query:
             patient_list = patient_list.filter(
@@ -357,9 +378,15 @@ def patient_list(request):
                 blood_type__icontains=search_query
             )
             
+        paginator = Paginator(patient_list, 10)
+        page_number = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_number)
+        
         return render(request, 'nurse/PatientList.html', {
             'patients': patient_list,
-            'search_query': search_query
+            'search_query': search_query,
+            'current_user': current_user,
+            'page_obj': page_obj,
         })
     except Exception as e:
         return HttpResponse(f'Error lang dyan: {e}')
@@ -367,6 +394,7 @@ def patient_list(request):
 def edit_patient(request, patient_id):
     try:
         patientObj = Patient.objects.get(pk=patient_id)
+        current_user = get_current_user(request)
         
         if request.method == 'POST':
             first_name = request.POST.get('first_name')
@@ -433,6 +461,7 @@ def edit_patient(request, patient_id):
             patientObj.family_history = family_history
             patientObj.save()
             
+            
             messages.success(request, 'Patiend updated successfully.')
             return redirect('/patient/list')
         
@@ -443,6 +472,7 @@ def edit_patient(request, patient_id):
             'blood_types': Patient.BLOOD_TYPES,
             'physicians': User.objects.filter(role='D'),
             'nurses': User.objects.filter(role='N'),
+            'current_user': current_user
         })
     except Exception as e:
         return HttpResponse(f'Error:{e}')
@@ -450,7 +480,15 @@ def edit_patient(request, patient_id):
 def show_information(request, patient_id):
     try:
         patient = Patient.objects.get(pk=patient_id)
-        return render(request, 'nurse/ShowInformation.html', {'patient': patient})
+        # return render(request, 'nurse/ShowInformation.html', {'patient': patient})
+        vitals = VitalSigns.objects.filter(patient_id=patient_id).order_by('-date', '-time')
+        current_user = get_current_user(request)
+
+        return render(request, 'nurse/ShowInformation.html', {
+            'patient': patient,
+            'vitals': vitals,
+            'current_user': current_user,
+        })
     except Exception as e:
         return HttpResponse(f'Error: {e}')
     
@@ -485,7 +523,8 @@ def add_vitals(request):
 
         # For GET request, show the form and pass all patients
         patients = Patient.objects.all()
-        return render(request, 'nurse/VitalSign.html', {'patients': patients})
+        current_user = get_current_user(request)
+        return render(request, 'nurse/VitalSign.html', {'patients': patients, 'current_user': current_user})
 
     except Exception as e:
         return HttpResponse(f'Error da ah: {e}')
@@ -493,28 +532,93 @@ def add_vitals(request):
 def patient_vitals(request, patient_id):
     try:
         patient = get_object_or_404(Patient, pk=patient_id)
-        vitals = VitalSigns.objects.filter(patient_id=patient_id).order_by('-date', '-time')
+        current_user = get_current_user(request)
+
+        # Get unique vital sign dates
+        date_qs = (
+            VitalSigns.objects
+            .filter(patient_id=patient_id)
+            .annotate(day=TruncDate('date'))
+            .values_list('day', flat=True)
+            .distinct()
+            .order_by('-day')
+        )
+
+        selected_date_str = request.GET.get('selected_date')
+        selected_date = None
+        page_obj = None
+
+        if selected_date_str:
+            try:
+                selected_date = date.fromisoformat(selected_date_str)
+            except ValueError:
+                selected_date = None
+        else:
+            paginator = Paginator(date_qs, 1)
+            page_number = request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
+            selected_date = page_obj.object_list[0] if page_obj.object_list else None
+
+        # Filter vitals by selected date
+        vitals = VitalSigns.objects.filter(
+            patient_id=patient_id,
+            date=selected_date
+        ).order_by('-date', '-time')
+        
+        # Get vitals for selected date (only if a date is selected)
+        if selected_date:
+            vitals = VitalSigns.objects.filter(
+                patient_id=patient_id,
+                date=selected_date
+            ).order_by('-date', '-time')
+        else:
+            vitals = VitalSigns.objects.none()  # nothing to show
 
         return render(request, 'nurse/PatientVitals.html', {
             'patient': patient,
-            'vitals': vitals
+            'vitals': vitals,
+            'selected_date': selected_date,
+            'page_obj': page_obj,
+            'date_options': date_qs,
+            'current_user': current_user
         })
+
     except Exception as e:
         return HttpResponse(f'Error fetching vitals: {e}')
-
+    
 def nurse_dashboard(request):
     try:
         today = date.today()
+        start_of_week = today - timedelta(days=today.weekday())
         
         total_patients_today = Patient.objects.annotate(
             admission_day=TruncDate('admission_date')
         ).filter(admission_day=today).count()
         vitals_today = VitalSigns.objects.filter(date=today).count()
         
+        # Get current user data
+        current_user = get_current_user(request)
+        
+        vitals_by_day = (
+        VitalSigns.objects
+        .filter(date__range=[start_of_week, today])
+        .annotate(day=TruncDate('date'))
+        .values('day')
+        .annotate(total=Count('id'))
+        .order_by('day')
+    )
+
+        # Format for chart
+        vitals_chart_labels = [v['day'].strftime('%a') for v in vitals_by_day]
+        vitals_chart_data = [v['total'] for v in vitals_by_day]
+
         data = {
             'total_patients_today': total_patients_today,
             'vitals_today': vitals_today,
             'pending_task': 3,
+            'current_user': current_user,
+            'vitals_chart_labels': vitals_chart_labels,
+            'vitals_chart_data': vitals_chart_data,
         }
         
         return render(request, 'dashboard/NurseDashboard.html', data)
@@ -524,20 +628,66 @@ def nurse_dashboard(request):
 def admin_dashboard(request):
     today = date.today()
 
+    # Dashboard counts
     total_patients = Patient.objects.count()
     admissions_today = Patient.objects.filter(admission_date__date=today).count()
+    total_physicians = User.objects.filter(role='D').count()
+    total_nurses = User.objects.filter(role='N').count()
+    current_user = get_current_user(request)
 
-    total_physicians = User.objects.filter(role='D').count()  # 'D' for Doctor
-    total_nurses = User.objects.filter(role='N').count()      # 'N' for Nurse
+    # Chart data for the past 7 days
+    start_date = today - timedelta(days=6)
+    admissions = (
+        Patient.objects
+        .filter(admission_date__date__gte=start_date)
+        .annotate(day=TruncDate('admission_date'))
+        .values('day')
+        .annotate(count=Count('patient_id'))
+        .order_by('day')
+    )
+
+    # Prepare labels and data
+    day_map = {ad['day']: ad['count'] for ad in admissions}
+    chart_labels = []
+    chart_data = []
+
+    for i in range(7):
+        day = start_date + timedelta(days=i)
+        chart_labels.append(day.strftime("%a"))  # e.g., Mon, Tue
+        chart_data.append(day_map.get(day, 0))
 
     context = {
         'total_patients': total_patients,
         'admissions_today': admissions_today,
         'total_physicians': total_physicians,
         'total_nurses': total_nurses,
+        'current_user': current_user,
+        'chart_labels': chart_labels,
+        'chart_data': chart_data,
     }
 
     return render(request, 'dashboard/AdminDash.html', context)
+
+def doctor_dashboard(request):
+    try:
+        today = date.today()
+        total_patients = Patient.objects.count()
+        total_physician = User.objects.filter(role='D').count()
+        total_nurses = User.objects.filter(role='N').count()
+        admission_today = Patient.objects.filter(admission_date__date = today).count()
+        current_user = get_current_user(request)
+        
+        data = {
+            'total_patients': total_patients,
+            'total_physician': total_physician,
+            'total_nurses': total_nurses,
+            'admission_today': admission_today,
+            'current_user': current_user
+        }
+        
+        return render(request, 'dashboard/DoctorDash.html', data)
+    except Exception as e:
+        return HttpResponse(f'Error: {e}')
 
 def chatbot_query(request):
     query = request.GET.get("q", "").strip().lower()

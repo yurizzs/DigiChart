@@ -6,54 +6,103 @@
 {% include 'include/NurseSidebar.html' %}
 {% include 'include/toastMessage.html' %}
 
+<div class="p-4 sm:ml-20 min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50">
+    <div class="max-w-6xl mx-auto py-4">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-full mb-4 shadow-xl">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-3 tracking-tight">Vital Signs Form</h1>
+            <p class="text-lg text-gray-600">Record patient's vital signs measurements</p>
+        </div>
 
-<div class="p-2 sm:ml-64 mt-16 md:mt-14">
-    <div class="container">
-        <h2 class="text-center">Vital Signs Form</h2>
-        <form method="POST" action="/vitals/add/">
-            {% csrf_token %}
-            <div>
-                <label for="date" class="form-label">Date</label>
-                <input type="date" class="form-control" id="date" name="date" value="{{ patient.date |date:'Y-m-d' }}" required>
-                <div class="mb-3">
-                    <label for="patient_id" class="form-label">Patient ID</label>
-                    <select name="patient_id" id="patient" required>
-                        
-                        {% for p in patients  %}
-                            <option value="{{ p.patient_id }}">{{ p.full_name }}</option>
-                        {% endfor %}
-                            
-                    </select>
-                </div>
-                <div class="flex flex-row">      
-                    <div>
-                        <label for="time" class="form-label">Time</label>
-                        <input type="time" class="form-control" id="time" name="time" required>
+        <!-- Form Card -->
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+            <div class="bg-gradient-to-r from-red-500 to-pink-600 p-4">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-white/20 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
                     </div>
-                    <div class="mb-3">
-                        <label for="temperature" class="form-label">Temperature (°C)</label>
-                        <input type="number" step="0.1" class="form-control" id="temperature" name="temperature" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="pulse" class="form-label">Pulse Rate (bpm)</label>
-                        <input type="number" class="form-control" id="pulse" name="pulse" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="respiration" class="form-label">Respiration</label>
-                        <input type="number" class="form-control" id="respiration" name="respiration" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="blood_pressure" class="form-label">Blood Pressure (mmHg)</label>
-                        <input type="text" class="form-control" id="blood_pressure" name="blood_pressure" required>
-                    </div>
-                    <div>
-                        <label for="o_sat" class="form-label">Oxygen Saturation (%)</label>
-                        <input type="number" class="form-control" id="o_sat" name="o_sat" required>
-                    </div>
+                    <h2 class="text-2xl font-bold text-white">New Vital Signs Entry</h2>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+            <form method="POST" action="/vitals/add/" class="p-4">
+                {% csrf_token %}
+                <!-- Date and Patient at the top -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                        <label for="date" class="block text-sm font-semibold text-gray-700 uppercase mb-2">Date</label>
+                        <input type="date" id="date" name="date" value="{{ patient.date |date:'Y-m-d' }}" required 
+                            class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-white text-base text-gray-700 focus:outline-none focus:border-red-500">
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                        <label for="patient_id" class="block text-sm font-semibold text-gray-700 uppercase mb-2">Patient</label>
+                        <select name="patient_id" id="patient" required 
+                            class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-white text-base text-gray-700 focus:outline-none focus:border-red-500">
+                            {% for p in patients %}
+                                <option value="{{ p.patient_id }}">{{ p.full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="overflow-x-auto bg-gray-50 rounded-xl p-2 border border-gray-100">
+                    <table class="min-w-full divide-y divide-gray-200 text-center">
+                        <thead class="bg-white rounded-lg">
+                            <tr>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-700 first:rounded-l-lg">Time</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-700">Temp (°C)</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-700">Pulse</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-700">Resp</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-700">BP (mmHg)</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-700 last:rounded-r-lg">O2 Sat (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-100">
+                            <tr>
+                                <td class="px-4 py-3">
+                                    <input type="time" id="time" name="time" required 
+                                        class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-gray-50 text-base text-gray-700 focus:outline-none focus:border-red-500">
+                                </td>
+                                <td class="px-4 py-3">
+                                    <input type="number" step="0.1" id="temperature" name="temperature" required 
+                                        class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-gray-50 text-base text-gray-700 focus:outline-none focus:border-red-500">
+                                </td>
+                                <td class="px-4 py-3">
+                                    <input type="number" id="pulse" name="pulse" required 
+                                        class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-gray-50 text-base text-gray-700 focus:outline-none focus:border-red-500">
+                                </td>
+                                <td class="px-4 py-3">
+                                    <input type="number" id="respiration" name="respiration" required 
+                                        class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-gray-50 text-base text-gray-700 focus:outline-none focus:border-red-500">
+                                </td>
+                                <td class="px-4 py-3">
+                                    <input type="text" id="blood_pressure" name="blood_pressure" required 
+                                        class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-gray-50 text-base text-gray-700 focus:outline-none focus:border-red-500">
+                                </td>
+                                <td class="px-4 py-3">
+                                    <input type="number" id="o_sat" name="o_sat" required 
+                                        class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-gray-50 text-base text-gray-700 focus:outline-none focus:border-red-500">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex justify-end mt-4">
+                    <button type="submit" 
+                        class="px-8 py-4 rounded-xl bg-gradient-to-r from-red-500 to-pink-600 text-white font-semibold shadow-lg flex items-center space-x-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span class="text-lg">Submit Vital Signs</span>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

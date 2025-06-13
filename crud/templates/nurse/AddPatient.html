@@ -7,203 +7,299 @@
 {% include 'include/NurseSidebar.html' %}
 {% include 'include/toastMessage.html' %}
 
-<div class="p-2 sm:ml-64 mt-16 md:mt-14">
-    <form action="/patient/add/" method="post">
-        {% csrf_token %}
-        <div class="grid grid-cols-2 gap-4 mx-auto">
-            <div class="col-span-2 md:col-span-1">
-                <div class="relative z-0 w-full mb-5 group">
-                    <input type="text" name="first_name" id="first_name" placeholder=" " class="" required value="{{ form_data.first_name|default:''}}">
-                    <label for="first_name">First Name</label>
-                </div>
+<div class="p-4 sm:ml-20 min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50">
+    <div class="max-w-6xl mx-auto py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full mb-4 shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Patient Admission Form</h1>
+            <p class="text-gray-600">Enter patient information for hospital admission</p>
+        </div>
 
-                <div class="relative z-0 w-full mb-5 group">
-                    <input type="text" name="middle_name" id="middle_name" placeholder=" " class="" value="{{ form_data.middle_name|default:''}}">
-                    <label for="middle_name">Middle Name</label>
+        <form action="/patient/add/" method="post" class="space-y-8">
+            {% csrf_token %}
+            
+            <!-- Demographic Information Card -->
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+                <div class="bg-gradient-to-r from-cyan-500 to-blue-600 p-6">
+                    <div class="flex items-center space-x-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <h2 class="text-xl font-semibold text-white">Demographic Information</h2>
+                    </div>
                 </div>
+                <div class="p-8 space-y-6">
+                    <!-- Name Fields -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="space-y-2">
+                            <label for="first_name" class="block text-sm font-semibold text-gray-700">First Name *</label>
+                            <input type="text" name="first_name" id="first_name" placeholder="Enter first name"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" 
+                                required value="{{ form_data.first_name|default:''}}">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="middle_name" class="block text-sm font-semibold text-gray-700">Middle Name</label>
+                            <input type="text" name="middle_name" id="middle_name" placeholder="Enter middle name"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" 
+                                value="{{ form_data.middle_name|default:''}}">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="last_name" class="block text-sm font-semibold text-gray-700">Last Name *</label>
+                            <input type="text" name="last_name" id="last_name" placeholder="Enter last name"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" 
+                                required value="{{ form_data.last_name|default:''}}">
+                        </div>
+                    </div>
 
-                <div class="relative z-0 w-full mb-5 group">
-                    <input type="text" name="last_name" id="last_name" placeholder=" " class="" required value="{{ form_data.last_name|default:''}}">
-                    <label for="last_name">Last Name</label>
+                    <!-- Basic Info -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="space-y-2">
+                            <label for="gender" class="block text-sm font-semibold text-gray-700">Gender *</label>
+                            <select name="gender" id="gender" class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" required>
+                                <option value="">Select gender</option>
+                                {% for value, label in gender_choices %}
+                                    <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="age" class="block text-sm font-semibold text-gray-700">Age *</label>
+                            <input type="number" name="age" id="age" placeholder="Age"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" 
+                                required value="{{ form_data.age|default:''}}">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="birth_date" class="block text-sm font-semibold text-gray-700">Date of Birth *</label>
+                            <input type="date" name="birth_date" id="birth_date"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" 
+                                required value="{{ form_data.birth_date|default:''}}">
+                        </div>
+                    </div>
+
+                    <!-- Physical Measurements -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="space-y-2">
+                            <label for="height" class="block text-sm font-semibold text-gray-700">Height (cm) *</label>
+                            <input type="number" name="height" id="height" placeholder="Height in cm"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" 
+                                required value="{{ form_data.height|default:''}}">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="weight" class="block text-sm font-semibold text-gray-700">Weight (kg) *</label>
+                            <input type="number" name="weight" id="weight" placeholder="Weight in kg"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" 
+                                required value="{{ form_data.weight|default:''}}">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="lmp" class="block text-sm font-semibold text-gray-700">Last Menstrual Period</label>
+                            <input type="date" name="lmp" id="lmp"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" 
+                                value="{{ form_data.lmp|default:''}}">
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label for="address" class="block text-sm font-semibold text-gray-700">Address *</label>
+                            <input type="text" name="address" id="address" placeholder="Complete address"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" 
+                                required value="{{ form_data.address|default:''}}">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="contact_number" class="block text-sm font-semibold text-gray-700">Contact Number *</label>
+                            <input type="text" name="contact_number" id="contact_number" placeholder="09XXXXXXXXX"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" 
+                                required value="{{ form_data.contact_number|default:''}}">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="space-y-2">
+                            <label for="status" class="block text-sm font-semibold text-gray-700">Status *</label>
+                            <select name="status" id="status" class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" required>
+                                <option value="">Select status</option>
+                                {% for label, value in status_choices %}
+                                    <option value="{{ label }}">{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="religion" class="block text-sm font-semibold text-gray-700">Religion *</label>
+                            <input type="text" name="religion" id="religion" placeholder="Religion"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" 
+                                required value="{{ form_data.religion|default:''}}">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="blood_type" class="block text-sm font-semibold text-gray-700">Blood Type *</label>
+                            <select name="blood_type" id="blood_type" class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" required>
+                                <option value="">Select blood type</option>
+                                {% for blood, type in blood_types %}
+                                    <option value="{{ blood }}">{{ type }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="admission_date" class="block text-sm font-semibold text-gray-700">Admission Date & Time *</label>
+                            <input type="datetime-local" name="admission_date" id="admission_date"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" 
+                                required value="{{ form_data.admission_date|default:''}}">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="physician" class="block text-sm font-semibold text-gray-700">Admitting Physician *</label>
+                            <select name="physician" id="physician" class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" required>
+                                <option value="">Select physician</option>
+                                {% for doctor in physicians %}
+                                    <option value="{{ doctor.user_id }}">{{ doctor.full_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="nurse" class="block text-sm font-semibold text-gray-700">Attending Nurse *</label>
+                            <select name="nurse" id="nurse" class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" required>
+                                <option value="">Select nurse</option>
+                                {% for nurse in nurses %}
+                                    <option value="{{ nurse.user_id }}">{{ nurse.full_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label for="chief_complaint" class="block text-sm font-semibold text-gray-700">Chief Complaint *</label>
+                            <textarea name="chief_complaint" id="chief_complaint" rows="3" placeholder="Patient's primary concern or reason for admission"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white resize-none" 
+                                required>{{ form_data.chief_complaint|default:'' }}</textarea>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="admitting_diagnosis" class="block text-sm font-semibold text-gray-700">Admitting Diagnosis *</label>
+                            <textarea name="admitting_diagnosis" id="admitting_diagnosis" rows="3" placeholder="Initial diagnosis upon admission"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white resize-none" 
+                                required>{{ form_data.admitting_diagnosis|default:'' }}</textarea>
+                        </div>
+                    </div>
                 </div>
+            </div>
 
-                <div class="relative z-0 w-full mb-5 group">
-                    <label for="gender">Gender</label>
-                    <select name="gender" id="gender" required>
-                        <option value="">Select a Gender</option>
-                        
-                        {% for value, label in gender_choices  %}
-                            <option value="{{ value }}">{{ label }}</option>
-                        {% endfor %}                           
-                    </select>
+            <!-- Vital Signs Card -->
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+                <div class="bg-gradient-to-r from-red-500 to-pink-600 p-6">
+                    <div class="flex items-center space-x-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                        <h2 class="text-xl font-semibold text-white">Vital Signs Upon Admission</h2>
+                    </div>
                 </div>
-
-                <div class="relative z-0 w-full mb-5 group">
-                    <input type="number" name="age" id="age" placeholder=" " class="" required value="{{ form_data.age|default:''}}">
-                    <label for="age">Age</label>
-                </div>
-
-                <div class="relative z-0 w-full mb-5 group">
-                    <input type="date" name="birth_date" id="birth_date" value="{{ form_data.birth_date|default:''}}" required>
-                    <label for="birth_date">Date of Birth</label>
-                </div>
-
-                <div class="relative z-0 w-full mb-5 group">
-                    <input type="number" name="height" id="height" placeholder=" " class="" required value="{{ form_data.height|default:''}}">
-                    <label for="height">Height</label>
-                </div>
-
-                <div class="relative z-0 w-full mb-5 group">
-                    <input type="number" name="weight" id="weight" placeholder=" " class="" required value="{{ form_data.weight|default:''}}">
-                    <label for="weight">weight</label>
-                </div>
-
-                <div class="relative z-0 w-full mb-5 group">
-                    <input type="date" name="lmp" id="lmp" value=" {{form_data.lmp|default:' '}}">
-                    <label for="lmp" >Last Menstrual Period</label>
-                </div>
-
-                <div class="relative z-0 w-full mb-5 group">
-                    <input type="text" name="address" id="address" placeholder=" " class="" required value="{{ form_data.address|default:''}}">
-                    <label for="address">Address</label>
-                </div>
-
-                <div class="relative z-0 w-full mb-5 group">
-                    <input type="text" name="contact_number" id="contact_number" placeholder=" " class="" required value="{{ form_data.contact_number|default:''}}">
-                    <label for="contact_number">Contact Number</label>
-                </div>
-
-                <div class="relative z-0 w-full mb-5 group">
-                    <div class="flex items-center flex-col">
-                        <h3>Vital Signs Upon Admission</h3>
-                        <div class="flex flex-row w-full">
-                            <div>
-                                <input type="number" name="temperature_on_admission" id="temperature_on_admission" placeholder=" " class="" required value="{{ form_data.temperature_on_admission|default:''}}">
-                                <label for="temperature_on_admission">Temperature (°C)</label>
+                <div class="p-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                        <div class="space-y-2">
+                            <label for="temperature_on_admission" class="block text-sm font-semibold text-gray-700">Temperature *</label>
+                            <div class="relative">
+                                <input type="number" step="0.1" name="temperature_on_admission" id="temperature_on_admission" placeholder="36.5"
+                                    class="w-full px-4 py-3 pr-12 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" 
+                                    required value="{{ form_data.temperature_on_admission|default:''}}">
+                                <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">°C</span>
                             </div>
-                            <div>
-                                <input type="number" name="pulse_on_admission" id="pulse_on_admission" placeholder=" " class="" required value="{{ form_data.pulse_on_admission|default:''}}">
-                                <label for="pulse_on_admission">Pulse Rate (bpm)</label>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="pulse_on_admission" class="block text-sm font-semibold text-gray-700">Pulse Rate *</label>
+                            <div class="relative">
+                                <input type="number" name="pulse_on_admission" id="pulse_on_admission" placeholder="72"
+                                    class="w-full px-4 py-3 pr-16 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" 
+                                    required value="{{ form_data.pulse_on_admission|default:''}}">
+                                <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">bpm</span>
                             </div>
-                            <div>
-                                <input type="number" name="respiration_on_admission" id="respiration_on_admission" placeholder=" " class="" required value="{{ form_data.respiration_on_admission|default:''}}">
-                                <label for="respiration_on_admission">Respiratory Rate</label>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="respiration_on_admission" class="block text-sm font-semibold text-gray-700">Respiratory Rate *</label>
+                            <div class="relative">
+                                <input type="number" name="respiration_on_admission" id="respiration_on_admission" placeholder="16"
+                                    class="w-full px-4 py-3 pr-16 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" 
+                                    required value="{{ form_data.respiration_on_admission|default:''}}">
+                                <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">rpm</span>
                             </div>
-                            <div>
-                                <input type="text" name="blood_pressure_on_admission" id="blood_pressure_on_admission" placeholder=" " class="" required value="{{ form_data.blood_pressure_on_admission|default:''}}">
-                                <label for="blood_pressure_on_admission">Blood Pressure</label>
-                            </div>
-                            <div>
-                                <input type="number" name="o_sat_on_admission" id="o_sat_on_admission" placeholder=" " class="" required value="{{ form_data.o_sat_on_admission|default:''}}">
-                                <label for="o_sat_on_admission">Oxygen Saturation</label>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="blood_pressure_on_admission" class="block text-sm font-semibold text-gray-700">Blood Pressure *</label>
+                            <input type="text" name="blood_pressure_on_admission" id="blood_pressure_on_admission" placeholder="120/80"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" 
+                                required value="{{ form_data.blood_pressure_on_admission|default:''}}">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="o_sat_on_admission" class="block text-sm font-semibold text-gray-700">Oxygen Saturation *</label>
+                            <div class="relative">
+                                <input type="number" name="o_sat_on_admission" id="o_sat_on_admission" placeholder="98"
+                                    class="w-full px-4 py-3 pr-12 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white" 
+                                    required value="{{ form_data.o_sat_on_admission|default:''}}">
+                                <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">%</span>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="relative z-0 w-full mb-5 group">
-                    <label for="status">Status</label>
-                    <select name="status" id="status" class="" required>
-                        <option value="">Select a Status</option>
-
-                        {% for label, value in status_choices  %}
-                            <option value="{{ label }}">{{ value }}</option>
-                        {% endfor %}
-                            
-                    </select>
-                </div>
-
-                <div class="relative z-0 w-full mb-5 group">
-                    <input type="text" name="religion" id="religion" placeholder=" " class="" required value="{{ form_data.religion|default:''}}">
-                    <label for="religion">Religion</label>
-                </div>
-
-                <div class="relative z-0 w-full mb-5 group">
-                    <label for="blood_type">Blood Type</label>
-                    <select name="blood_type" id="blood_type" class="" required>
-                        <option value="">Select a Blood Type</option>
-
-                        {% for blood, type in blood_types  %}
-                            <option value="{{ blood }}">{{ type }}</option>
-                        {% endfor %}
-                            
-                    </select>
-                </div>
-
-                <div class="relative z-0 w-full mb-5 group">
-                    <input type="datetime-local" name="admission_date" id="admission_date" value=" {{form_data.admission_date|default:' '}}"required>
-                    <label for="admission_date" >Date and Time of Admission</label>
-                </div>
-
-                <div>
-                    <label for="physician">Admitting Physician</label>
-                    <select name="physician" id="physician" class="" required>
-                        <option value="">Select a Doctor</option>
-                        
-                        {% for doctor in physicians %}
-                            <option value="{{ doctor.user_id }}">{{ doctor.full_name}}</option>
-                        {% endfor %}
-                            
-                    </select>
-                </div>
-
-                <div>
-                    <label for="nurse">Nurse attendee</label>
-                    <select name="nurse" id="nurse" class required>
-                        <option value="">Attending Nurse</option>
-                        
-                        {% for nurse in nurses %}
-                            <option value="{{ nurse.user_id }}">{{ nurse.full_name }}</option>
-                        {% endfor %}
-                            
-                    </select>
-                </div>
-
-                <div>
-                    <input type="text" name="chief_complaint" id="chief_complaint" placeholder="" class="" required value="{{ form_data.chief_complaint|default:''}}">
-                    <label for="chief_complaint">Chief Complaint</label>
-                </div>
-
-                <div>
-                    <input type="text" name="admitting_diagnosis" id="admitting_diagnosis" placeholder="" class="" required value="{{ form_data.admitting_diagnosis|default:''}}">
-                    <label for="admitting_diagnosis">Admitting Diagnosis</label>
-                </div>
-
-                <div>
-                    <div>
-                        <input type="text" name="past_illness" id="past_illness" placeholder="" class="" required value="{{ form_data.past_illness|default:''}}">
-                        <label for="past_illness">Past Illness</label>
-                    </div>
-    
-                    <div>
-                        <input type="text" name="previous_hospitalization" id="previous_hospitalization" placeholder="" class="" required value="{{ form_data.previous_hospitalization|default:''}}">
-                        <label for="previous_hospitalization">Previous Hospitalization</label>
-                    </div>
-    
-                    <div>
-                        <input type="text" name="surgeries" id="surgeries" placeholder="" class="" required value="{{ form_data.surgeries|default:''}}">
-                        <label for="surgeries">Sugeries</label>
-                    </div>
-    
-                    <div>
-                        <input type="text" name="injuries" id="injuries" placeholder="" class="" required value="{{ form_data.injuries|default:''}}">
-                        <label for="injuries">Injuries</label>
-                    </div>
-    
-                    <div>
-                        <input type="text" name="family_history" id="family_history" class="" required value="{{ form_data.family_history|default:''}}">
-                        <label for="family_history">Family History</label>
-                    </div>
-                </div>
-
             </div>
-        </div>
-        <div class="flex justify-end">
-            <button type="submit">
-                <span>Add Patient</span>
-            </button>
-        </div>
-    </form>
+
+            <!-- Medical History Card -->
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+                <div class="bg-gradient-to-r from-purple-500 to-indigo-600 p-6">
+                    <div class="flex items-center space-x-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <h2 class="text-xl font-semibold text-white">Medical History</h2>
+                    </div>
+                </div>
+                <div class="p-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="space-y-2">
+                            <label for="past_illness" class="block text-sm font-semibold text-gray-700">Past Illness *</label>
+                            <textarea name="past_illness" id="past_illness" rows="3" placeholder="Previous illnesses, conditions, or diseases"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white resize-none" 
+                                required>{{ form_data.past_illness|default:'' }}</textarea>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="previous_hospitalization" class="block text-sm font-semibold text-gray-700">Previous Hospitalization *</label>
+                            <textarea name="previous_hospitalization" id="previous_hospitalization" rows="3" placeholder="Previous hospital admissions and dates"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white resize-none" 
+                                required>{{ form_data.previous_hospitalization|default:'' }}</textarea>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="surgeries" class="block text-sm font-semibold text-gray-700">Surgeries *</label>
+                            <textarea name="surgeries" id="surgeries" rows="3" placeholder="Previous surgical procedures and dates"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white resize-none" 
+                                required>{{ form_data.surgeries|default:'' }}</textarea>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="injuries" class="block text-sm font-semibold text-gray-700">Injuries *</label>
+                            <textarea name="injuries" id="injuries" rows="3" placeholder="Previous injuries or trauma"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white resize-none" 
+                                required>{{ form_data.injuries|default:'' }}</textarea>
+                        </div>
+                        <div class="space-y-2 md:col-span-2">
+                            <label for="family_history" class="block text-sm font-semibold text-gray-700">Family History *</label>
+                            <textarea name="family_history" id="family_history" rows="3" placeholder="Family medical history including hereditary conditions"
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-200 bg-gray-50 hover:bg-white resize-none" 
+                                required>{{ form_data.family_history|default:'' }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-center pt-6">
+                <button type="submit" class="group flex items-center space-x-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-semibold py-4 px-12 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:rotate-90 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span class="text-lg">Add Patient to System</span>
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
 {% endblock 'content' %}
