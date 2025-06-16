@@ -7,315 +7,132 @@
 {% include 'include/DoctorSidebar.html' %}
 {% include 'include/toastMessage.html' %}
 
-<body class="bg-gradient-to-br from-medical-50 to-blue-50 min-h-screen py-8">
-    <div class="max-w-4xl mx-auto px-4">
-        <!-- Header -->
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-6 border-l-4 border-medical-500">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <div class="bg-medical-100 p-3 rounded-full">
-                        <i class="fas fa-prescription-bottle-alt text-medical-600 text-xl"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-2xl font-bold text-gray-800">Prescribe Medication</h1>
-                        <p class="text-gray-600">Add new medication prescription for patient</p>
-                    </div>
-                </div>
-                <div class="text-right">
-                    <p class="text-sm text-gray-500">Date: <span class="font-medium" id="currentDate"></span></p>
-                    <p class="text-sm text-gray-500">Provider: Dr. John Smith</p>
-                </div>
+<!-- Modern Card Layout - Light Mode -->
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex flex-col items-center py-12 px-2">
+    <!-- Top Info Bar -->
+    <div class="w-full max-w-2xl flex flex-col md:flex-row justify-between items-center mb-8 gap-2">
+        <div class="flex items-center gap-2 text-gray-600 text-lg font-semibold">
+            <i class="fas fa-calendar-alt text-blue-500"></i>
+            <span>Date: <span class="font-bold" id="date_ordered"></span></span>
+        </div>
+        <div class="flex items-center gap-2 text-gray-600 text-lg font-semibold">
+            <i class="fas fa-user-md text-green-500"></i>
+            {% if current_user %}
+                <span>{{ current_user.full_name }}</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Stepper -->
+    <div class="w-full max-w-2xl flex justify-center mb-10">
+        <div class="flex items-center gap-0">
+            <div class="flex flex-col items-center">
+                <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold shadow-lg border-4 border-blue-200">1</div>
+                <span class="mt-2 text-blue-600 font-semibold text-xs tracking-wide">Patient</span>
+            </div>
+            <div class="w-12 h-1 bg-blue-200 mx-1 rounded"></div>
+            <div class="flex flex-col items-center">
+                <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white font-bold shadow-lg border-4 border-green-200">2</div>
+                <span class="mt-2 text-green-600 font-semibold text-xs tracking-wide">Medication</span>
+            </div>
+            <div class="w-12 h-1 bg-gray-200 mx-1 rounded"></div>
+            <div class="flex flex-col items-center">
+                <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold shadow-lg border-4 border-gray-300">3</div>
+                <span class="mt-2 text-gray-500 font-semibold text-xs tracking-wide">Review</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Form -->
+    <form action="/doctor/medication/" method="post" class="w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-gray-200 p-10 space-y-10">
+        {% csrf_token %}
+
+        <!-- Patient Section -->
+        <div>
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-blue-100 p-3 rounded-xl shadow">
+                    <i class="fas fa-user-injured text-blue-500 text-2xl"></i>
+                </span>
+                <h2 class="text-2xl font-bold text-blue-700 tracking-wide">Patient</h2>
+            </div>
+            <label for="patient_id" class="block text-sm font-medium text-gray-700 mb-2">Select Patient</label>
+            <div class="relative">
+                <select name="patient_id" id="patient" required
+                    class="w-full px-4 py-3 rounded-xl border border-gray-300 bg-gray-50 text-base text-gray-700 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition">
+                    <option value="" disabled selected>Select a patient</option>
+                    {% for p in patients %}
+                        <option value="{{ p.patient_id }}">{{ p.full_name }}</option>
+                    {% endfor %}
+                </select>
+                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                    <i class="fas fa-chevron-down"></i>
+                </span>
             </div>
         </div>
 
-        <!-- Main Form -->
-        <form method="post" class="space-y-6">
-            <!-- Django CSRF Token (placeholder for actual implementation) -->
-            <!-- {% csrf_token %} -->
-            
-            <!-- Patient Information Section -->
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                <div class="bg-gradient-to-r from-medical-500 to-medical-600 px-6 py-4">
-                    <h2 class="text-xl font-semibold text-white flex items-center">
-                        <i class="fas fa-user-injured mr-2"></i>
-                        Patient Information
-                    </h2>
+        <!-- Medication Section -->
+        <div>
+            <div class="flex items-center gap-3 mb-4">
+                <span class="bg-green-100 p-3 rounded-xl shadow">
+                    <i class="fas fa-pills text-green-500 text-2xl"></i>
+                </span>
+                <h2 class="text-2xl font-bold text-green-700 tracking-wide">Medication</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="relative">
+                    <input type="text" id="medication_name" name="medication_name" required
+                        class="peer w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-700 focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition placeholder-transparent"
+                        placeholder=" " />
+                    <label for="medication_name"
+                        class="absolute left-4 top-3 text-gray-400 text-sm transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-green-600 bg-white px-1">Medication Name <span class="text-red-400">*</span></label>
                 </div>
-                <div class="p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="patient" class="block text-sm font-medium text-gray-700 mb-2">
-                                Patient <span class="text-red-500">*</span>
-                            </label>
-                            <select id="patient" name="patient" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all duration-200 bg-white">
-                                <option value="">Select Patient</option>
-                                <option value="1">John Doe (ID: 12345)</option>
-                                <option value="2">Jane Smith (ID: 12346)</option>
-                                <option value="3">Mike Johnson (ID: 12347)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="patient_weight" class="block text-sm font-medium text-gray-700 mb-2">
-                                Patient Weight (kg)
-                            </label>
-                            <input type="number" id="patient_weight" name="patient_weight" step="0.1" placeholder="70.5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all duration-200">
-                        </div>
-                    </div>
+                <div class="relative">
+                    <input type="text" id="frequency" name="frequency" required
+                        class="peer w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-700 focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition placeholder-transparent"
+                        placeholder=" " />
+                    <label for="frequency"
+                        class="absolute left-4 top-3 text-gray-400 text-sm transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-green-600 bg-white px-1">Frequency <span class="text-red-400">*</span></label>
+                </div>
+                <div class="relative">
+                    <input type="text" id="dosage" name="dosage" required
+                        class="peer w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-700 focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition placeholder-transparent"
+                        placeholder=" " />
+                    <label for="dosage"
+                        class="absolute left-4 top-3 text-gray-400 text-sm transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-green-600 bg-white px-1">Dosage Form <span class="text-red-400">*</span></label>
+                </div>
+                <div class="relative">
+                    <input type="text" id="route" name="route" required
+                        class="peer w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-700 focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition placeholder-transparent"
+                        placeholder=" " />
+                    <label for="route"
+                        class="absolute left-4 top-3 text-gray-400 text-sm transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-green-600 bg-white px-1">Route <span class="text-red-400">*</span></label>
                 </div>
             </div>
-
-            <!-- Medication Details Section -->
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                <div class="bg-gradient-to-r from-green-500 to-green-600 px-6 py-4">
-                    <h2 class="text-xl font-semibold text-white flex items-center">
-                        <i class="fas fa-pills mr-2"></i>
-                        Medication Details
-                    </h2>
-                </div>
-                <div class="p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="md:col-span-2">
-                            <label for="medication_name" class="block text-sm font-medium text-gray-700 mb-2">
-                                Medication Name <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" id="medication_name" name="medication_name" required placeholder="e.g., Amoxicillin, Ibuprofen" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all duration-200">
-                        </div>
-                        
-                        <div>
-                            <label for="generic_name" class="block text-sm font-medium text-gray-700 mb-2">
-                                Generic Name
-                            </label>
-                            <input type="text" id="generic_name" name="generic_name" placeholder="Generic medication name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all duration-200">
-                        </div>
-
-                        <div>
-                            <label for="strength" class="block text-sm font-medium text-gray-700 mb-2">
-                                Strength <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" id="strength" name="strength" required placeholder="e.g., 500mg, 250mg" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all duration-200">
-                        </div>
-
-                        <div>
-                            <label for="dosage_form" class="block text-sm font-medium text-gray-700 mb-2">
-                                Dosage Form <span class="text-red-500">*</span>
-                            </label>
-                            <select id="dosage_form" name="dosage_form" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all duration-200 bg-white">
-                                <option value="">Select Form</option>
-                                <option value="tablet">Tablet</option>
-                                <option value="capsule">Capsule</option>
-                                <option value="syrup">Syrup</option>
-                                <option value="injection">Injection</option>
-                                <option value="cream">Cream</option>
-                                <option value="drops">Drops</option>
-                                <option value="inhaler">Inhaler</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="route" class="block text-sm font-medium text-gray-700 mb-2">
-                                Route of Administration <span class="text-red-500">*</span>
-                            </label>
-                            <select id="route" name="route" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all duration-200 bg-white">
-                                <option value="">Select Route</option>
-                                <option value="oral">Oral</option>
-                                <option value="topical">Topical</option>
-                                <option value="intravenous">Intravenous (IV)</option>
-                                <option value="intramuscular">Intramuscular (IM)</option>
-                                <option value="subcutaneous">Subcutaneous</option>
-                                <option value="inhalation">Inhalation</option>
-                                <option value="rectal">Rectal</option>
-                                <option value="ophthalmic">Ophthalmic</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
+            <div class="relative mt-6">
+                <textarea id="instructions" name="instructions" rows="3"
+                    class="peer w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-700 focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition placeholder-transparent"
+                    placeholder=" "></textarea>
+                <label for="instructions"
+                    class="absolute left-4 top-3 text-gray-400 text-sm transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-green-600 bg-white px-1">Special Instructions</label>
             </div>
+        </div>
 
-            <!-- Prescription Details Section -->
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                <div class="bg-gradient-to-r from-purple-500 to-purple-600 px-6 py-4">
-                    <h2 class="text-xl font-semibold text-white flex items-center">
-                        <i class="fas fa-clipboard-list mr-2"></i>
-                        Prescription Instructions
-                    </h2>
-                </div>
-                <div class="p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div>
-                            <label for="dosage" class="block text-sm font-medium text-gray-700 mb-2">
-                                Dosage <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" id="dosage" name="dosage" required placeholder="e.g., 1 tablet, 5ml" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all duration-200">
-                        </div>
+        <!-- Action Bar -->
+        <div class="flex justify-end gap-4 ">
+            <button type="reset"
+                class="flex items-center gap-2 px-6 py-3 border border-gray-300 rounded-xl text-gray-700 font-semibold bg-gray-100 hover:bg-gray-200 transition">
+                <i class="fas fa-times-circle"></i> Cancel
+            </button>
+            <button type="submit"
+                class="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-500 to-green-500 text-white font-bold rounded-xl shadow-lg hover:from-blue-600 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all">
+                <i class="fas fa-paper-plane"></i> Prescribe
+            </button>
+        </div>
+    </form>
+</div>
 
-                        <div>
-                            <label for="frequency" class="block text-sm font-medium text-gray-700 mb-2">
-                                Frequency <span class="text-red-500">*</span>
-                            </label>
-                            <select id="frequency" name="frequency" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all duration-200 bg-white">
-                                <option value="">Select Frequency</option>
-                                <option value="once_daily">Once Daily</option>
-                                <option value="twice_daily">Twice Daily</option>
-                                <option value="three_times_daily">Three Times Daily</option>
-                                <option value="four_times_daily">Four Times Daily</option>
-                                <option value="every_6_hours">Every 6 Hours</option>
-                                <option value="every_8_hours">Every 8 Hours</option>
-                                <option value="every_12_hours">Every 12 Hours</option>
-                                <option value="as_needed">As Needed (PRN)</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">
-                                Duration <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" id="duration" name="duration" required placeholder="e.g., 7 days, 2 weeks" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all duration-200">
-                        </div>
-
-                        <div>
-                            <label for="quantity" class="block text-sm font-medium text-gray-700 mb-2">
-                                Quantity to Dispense <span class="text-red-500">*</span>
-                            </label>
-                            <input type="number" id="quantity" name="quantity" required placeholder="30" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all duration-200">
-                        </div>
-
-                        <div>
-                            <label for="refills" class="block text-sm font-medium text-gray-700 mb-2">
-                                Number of Refills
-                            </label>
-                            <select id="refills" name="refills" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all duration-200 bg-white">
-                                <option value="0">0 (No Refills)</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="priority" class="block text-sm font-medium text-gray-700 mb-2">
-                                Priority
-                            </label>
-                            <select id="priority" name="priority" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all duration-200 bg-white">
-                                <option value="routine">Routine</option>
-                                <option value="urgent">Urgent</option>
-                                <option value="stat">STAT</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="mt-6">
-                        <label for="instructions" class="block text-sm font-medium text-gray-700 mb-2">
-                            Special Instructions
-                        </label>
-                        <textarea id="instructions" name="instructions" rows="3" placeholder="Additional instructions for patient (e.g., Take with food, Avoid alcohol)" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all duration-200 resize-none"></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Clinical Information Section -->
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                <div class="bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-4">
-                    <h2 class="text-xl font-semibold text-white flex items-center">
-                        <i class="fas fa-stethoscope mr-2"></i>
-                        Clinical Information
-                    </h2>
-                </div>
-                <div class="p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="indication" class="block text-sm font-medium text-gray-700 mb-2">
-                                Indication/Diagnosis <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" id="indication" name="indication" required placeholder="Reason for prescription" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all duration-200">
-                        </div>
-
-                        <div>
-                            <label for="prescriber_notes" class="block text-sm font-medium text-gray-700 mb-2">
-                                Prescriber Notes
-                            </label>
-                            <input type="text" id="prescriber_notes" name="prescriber_notes" placeholder="Internal notes" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-medical-500 focus:border-transparent transition-all duration-200">
-                        </div>
-                    </div>
-
-                    <div class="mt-6">
-                        <label class="flex items-center space-x-3">
-                            <input type="checkbox" id="generic_substitution" name="generic_substitution" class="w-5 h-5 text-medical-600 border-gray-300 rounded focus:ring-medical-500">
-                            <span class="text-sm font-medium text-gray-700">Allow Generic Substitution</span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="flex flex-col sm:flex-row gap-4 justify-end pt-6">
-                <button type="button" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200">
-                    <i class="fas fa-times mr-2"></i>
-                    Cancel
-                </button>
-                <button type="button" class="px-6 py-3 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200">
-                    <i class="fas fa-save mr-2"></i>
-                    Save as Draft
-                </button>
-                <button type="submit" class="px-6 py-3 bg-gradient-to-r from-medical-500 to-medical-600 text-white rounded-lg font-medium hover:from-medical-600 hover:to-medical-700 focus:ring-2 focus:ring-medical-500 focus:ring-offset-2 transition-all duration-200 shadow-lg">
-                    <i class="fas fa-prescription-bottle-alt mr-2"></i>
-                    Prescribe Medication
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <script>
-        // Set current date
-        document.getElementById('currentDate').textContent = new Date().toLocaleDateString();
-        
-        // Form validation and interactions
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.querySelector('form');
-            const inputs = form.querySelectorAll('input[required], select[required]');
-            
-            // Add real-time validation feedback
-            inputs.forEach(input => {
-                input.addEventListener('blur', function() {
-                    if (this.value.trim() === '') {
-                        this.classList.add('border-red-500', 'bg-red-50');
-                        this.classList.remove('border-gray-300');
-                    } else {
-                        this.classList.remove('border-red-500', 'bg-red-50');
-                        this.classList.add('border-green-500', 'bg-green-50');
-                    }
-                });
-                
-                input.addEventListener('focus', function() {
-                    this.classList.remove('border-red-500', 'bg-red-50', 'border-green-500', 'bg-green-50');
-                    this.classList.add('border-gray-300');
-                });
-            });
-            
-            // Form submission
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Basic validation
-                let hasErrors = false;
-                inputs.forEach(input => {
-                    if (input.value.trim() === '') {
-                        input.classList.add('border-red-500', 'bg-red-50');
-                        hasErrors = true;
-                    }
-                });
-                
-                if (hasErrors) {
-                    alert('Please fill in all required fields.');
-                    return;
-                }
-                
-                // Show success message (in real Django app, this would submit to server)
-                alert('Prescription has been successfully created!');
-            });
-        });
-    </script>
-</body>
+<script>
+    document.getElementById('date_ordered').textContent = new Date().toLocaleDateString();
+</script>
 
 {% endblock 'content' %}

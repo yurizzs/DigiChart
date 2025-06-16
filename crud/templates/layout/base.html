@@ -9,8 +9,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <title>{% block 'title' %}{% endblock 'title' %}</title>
 </head>
-<body>
-    {% block 'content' %} {% endblock 'content' %}
+<body class="flex h-screen bg-gray-100">
+    <div class="sidebar">
+        {% if request.session.role == 'A' %}
+            {% include 'include/sidebar.html' %}
+        {% elif request.session.role == 'D' %}
+            {% include 'include/DoctorSidebar.html' %}
+        {% elif request.session.role == 'N' %}
+            {% include 'include/NurseSidebar.html' %}
+        {% endif %}
+    </div>
+    <main class="flex-1 overflow-y-auto">
+        {% block 'content' %} {% endblock 'content' %}
+    </main>
     {% if not hide_chatbot %}
         {% include 'chatbot/chatbot.html' %}
     {% endif %}

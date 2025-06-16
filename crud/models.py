@@ -65,7 +65,7 @@ class Patient(models.Model):
     birth_date = models.DateField(blank=False)
     height = models.DecimalField(max_digits=5, decimal_places=2, blank=False)
     weight = models.DecimalField(max_digits=5, decimal_places=2, blank=False)
-    lmp = models.DateField(blank=True)
+    lmp = models.DateField(blank=True, null=True)
     address = models.CharField(max_length=255, blank=False)
     contact_number = models.CharField(max_length=20, blank=False)
     temperature_on_admission = models.DecimalField(max_digits=4, decimal_places=2)
@@ -118,9 +118,10 @@ class Medication(models.Model):
         db_table = 'tbl_Medication'
         
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='medication')
-    physician = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=False, related_name='patients_as_physician')
+    physician = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=False, related_name='medication_physician')
     medication_name = models.CharField(max_length=100)
     dosage = models.CharField(max_length=100)
     frequency = models.CharField(max_length=100)
+    route = models.CharField(max_length=100)
     instructions = models.TextField(blank=True)
     date_ordered = models.DateField(auto_now_add=True)

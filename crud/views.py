@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
-from .models import User, Patient, VitalSigns
+from .models import User, Patient, VitalSigns, Medication
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
@@ -10,10 +10,51 @@ from datetime import date, timedelta
 from django.db.models import Count
 import re
 from django.http import JsonResponse
+from functools import wraps
 
 # Create your views here.
 
-def custom_login_view(request, role, template_name):
+def custom_login_view(*allowed_roles):
+    def decorator(view_func):
+        def wrapper(request, *args, **kwargs):
+            if not request.session.get('is_authenticated'):
+                # Get the role from the URL path
+                path = request.path
+                if '/admin/' in path:
+                    return redirect('/admin/login/')
+                elif '/doctor/' in path:
+                    return redirect('/doctor/login/')
+                elif '/nurse/' in path:
+                    return redirect('/nurse/login/')
+                else:
+                    return redirect('/admin/login/')
+            
+            # Check if user's role is in the allowed roles
+            user_role = request.session.get('role', '').upper()
+            if not any(role.upper() == user_role for role in allowed_roles):
+                messages.error(request, "You don't have permission to access this page.")
+                # Redirect to appropriate dashboard based on role
+                if user_role == 'A':
+                    return redirect('/admin/dashboard/')
+                elif user_role == 'D':
+                    return redirect('/doctor/dashboard/')
+                elif user_role == 'N':
+                    return redirect('/nurse/dashboard/')
+                else:
+                    return redirect('/admin/login/')
+            
+            return view_func(request, *args, **kwargs)
+        return wrapper
+    return decorator
+
+
+def home_page(request):
+    try:
+        return render(request, 'login/login.html', {'hide_chatbot': True})
+    except Exception as e:
+        return HttpResponse(f'Error: {e}')
+    
+def login_view(request, role, template_name):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -32,8 +73,9 @@ def custom_login_view(request, role, template_name):
                     print(f"DEBUG: Role matches")
                     # Set session data
                     request.session['username'] = user.username
-                    request.session['role'] = user.role
+                    request.session['role'] = user.role.upper()  # Ensure role is uppercase
                     request.session['is_authenticated'] = True
+                    request.session.set_expiry(86400)  # Session expires in 24 hours
                     
                     # Redirect based on role
                     if role.upper() == 'A':
@@ -54,28 +96,21 @@ def custom_login_view(request, role, template_name):
 
     return render(request, template_name, {'role': role, 'hide_chatbot': True})
 
-
-def home_page(request):
-    try:
-        return render(request, 'login/login.html', {'hide_chatbot': True})
-    except Exception as e:
-        return HttpResponse(f'Error: {e}')
-    
 def nurse_login(request):
     try:
-        return custom_login_view(request, 'N', 'login/nurse_login.html')
+        return login_view(request, 'N', 'login/nurse_login.html')
     except Exception as e:
         return HttpResponse(f'Error: {e}')
     
 def admin_login(request):
     try:
-        return custom_login_view(request, 'A', 'login/admin_login.html')
+        return login_view(request, 'A', 'login/admin_login.html')
     except Exception as e:
         return HttpResponse(f'Error: {e}')
     
 def doctor_login(request):
     try:
-        return custom_login_view(request, 'D', 'login/doctor_login.html')
+        return login_view(request, 'D', 'login/doctor_login.html')
     except Exception as e:
         return HttpResponse(f'Error: {e}')
 
@@ -91,6 +126,7 @@ def get_current_user(request):
             return None
     return None
 
+@custom_login_view('A')
 def add_user(request):
     try:
         current_user = get_current_user(request)
@@ -157,6 +193,7 @@ def add_user(request):
     except Exception as e:
         return HttpResponse(f"An error occurred: {e}") 
 
+@custom_login_view('A')
 def user_list(request):
     try:
         search_query = request.GET.get('search', '')
@@ -184,7 +221,8 @@ def user_list(request):
         })
     except Exception as e:
         return HttpResponse(f'Error alert: {e}')
-    
+
+@custom_login_view('A')    
 def edit_user(request, user_id):
     try:
         userObj = User.objects.get(pk=user_id)
@@ -224,6 +262,7 @@ def edit_user(request, user_id):
     except Exception as e:
         return HttpResponse(f'Error ulit:{e}')
 
+@custom_login_view('A')
 def delete_user(request, user_id):
     try:
         user = User.objects.get(pk=user_id)
@@ -239,7 +278,8 @@ def delete_user(request, user_id):
         return redirect('/user/list')
     except Exception as e:
         return HttpResponse(f'Error ulit: {e}')
-    
+
+@custom_login_view('A')    
 def changepass(request, user_id):
     try:
         if request.method == 'POST':
@@ -273,7 +313,8 @@ def changepass(request, user_id):
         return redirect('/user/list')
     except Exception as e:
         return HttpResponse(f'Error: {e}')
-   
+
+@custom_login_view('N')   
 def add_patient(request):
     try:
         current_user = get_current_user(request)
@@ -358,7 +399,8 @@ def add_patient(request):
             
     except Exception as e:
         return HttpResponse(f'Error sa tabi tabi: {e}')
-    
+
+@custom_login_view('N', 'D')    
 def patient_list(request):
     try:
         search_query = request.GET.get('search', '')
@@ -390,7 +432,8 @@ def patient_list(request):
         })
     except Exception as e:
         return HttpResponse(f'Error lang dyan: {e}')
-    
+
+@custom_login_view('N')    
 def edit_patient(request, patient_id):
     try:
         patientObj = Patient.objects.get(pk=patient_id)
@@ -477,6 +520,7 @@ def edit_patient(request, patient_id):
     except Exception as e:
         return HttpResponse(f'Error:{e}')
 
+@custom_login_view('N', 'D')
 def show_information(request, patient_id):
     try:
         patient = Patient.objects.get(pk=patient_id)
@@ -491,7 +535,8 @@ def show_information(request, patient_id):
         })
     except Exception as e:
         return HttpResponse(f'Error: {e}')
-    
+
+@custom_login_view('N')
 def add_vitals(request):
     try:
         if request.method == 'POST':
@@ -529,6 +574,7 @@ def add_vitals(request):
     except Exception as e:
         return HttpResponse(f'Error da ah: {e}')
 
+@custom_login_view('N', 'D')
 def patient_vitals(request, patient_id):
     try:
         patient = get_object_or_404(Patient, pk=patient_id)
@@ -585,7 +631,8 @@ def patient_vitals(request, patient_id):
 
     except Exception as e:
         return HttpResponse(f'Error fetching vitals: {e}')
-    
+
+@custom_login_view('N')
 def nurse_dashboard(request):
     try:
         today = date.today()
@@ -624,7 +671,8 @@ def nurse_dashboard(request):
         return render(request, 'dashboard/NurseDashboard.html', data)
     except Exception as e:
         return HttpResponse(f'Errowr: {e}')
-    
+
+@custom_login_view('A')
 def admin_dashboard(request):
     today = date.today()
 
@@ -668,6 +716,7 @@ def admin_dashboard(request):
 
     return render(request, 'dashboard/AdminDash.html', context)
 
+@custom_login_view('D')
 def doctor_dashboard(request):
     try:
         today = date.today()
@@ -689,6 +738,61 @@ def doctor_dashboard(request):
     except Exception as e:
         return HttpResponse(f'Error: {e}')
 
+@custom_login_view('D')
+def add_medication(request):
+    try:
+        if request.method == 'POST':
+            patient_id = request.POST.get('patient_id')  # get patient_id from form
+            patient = get_object_or_404(Patient, pk=patient_id)
+            physician = get_current_user(request)
+
+            medication_name = request.POST.get('medication_name')
+            dosage = request.POST.get('dosage')
+            frequency = request.POST.get('frequency')
+            route = request.POST.get('route')
+            instructions = request.POST.get('instructions')
+            date_ordered = request.POST.get('date_ordered')
+            
+            Medication.objects.create(
+                patient = patient,
+                physician = physician,
+                medication_name = medication_name,
+                dosage = dosage,
+                frequency = frequency,
+                route = route,
+                instructions = instructions,
+                date_ordered = date_ordered
+            )
+            
+            messages.success(request, 'Medication prescribed successfully')
+            return redirect('/doctor/patient/list/')
+        patients = Patient.objects.all()
+        current_user = get_current_user(request)
+        return render(request, 'doctor/AddMedication.html', {
+            'patients': patients,
+            'current_user': current_user,
+            'role': request.session.get('role', 'D')
+        })
+    except Exception as e:
+        return HttpResponse(f'Error: {e}')
+    
+@custom_login_view('D', 'N')
+def medication_list(request, patient_id):
+    try:
+        patient = get_object_or_404(Patient, pk=patient_id)
+        medications = patient.medication.all()
+        current_user = get_current_user(request)
+        
+        return render(request, 'doctor/MedicationList.html', {
+            'patient': patient,
+            'medications': medications,
+            'current_user': current_user,
+            'role': request.session.get('role', 'D')  # Add role to context
+        })
+    except Exception as e:
+        return HttpResponse(f'Error: {e}')
+
+@custom_login_view
 def chatbot_query(request):
     query = request.GET.get("q", "").strip().lower()
     print(f"Received query: {query}")  # Debug print
@@ -759,3 +863,44 @@ def chatbot_query(request):
     return JsonResponse({
         "response": "Sorry, I didn't understand that. Try: 'Show last BP for Eva Murphy' or 'Show last temperature for Eva Murphy'."
     })
+
+@custom_login_view('D')
+def doctor_patient_list(request):
+    try:
+        # Set the role in session to ensure correct sidebar
+        request.session['role'] = 'D'
+        
+        search_query = request.GET.get('search', '')
+        patient_list = Patient.objects.all()
+        current_user = get_current_user(request)
+        
+        if search_query:
+            patient_list = patient_list.filter(
+                first_name__icontains=search_query
+            ) | patient_list.filter(
+                middle_name__icontains=search_query
+            ) | patient_list.filter(
+                last_name__icontains=search_query
+            ) | patient_list.filter(
+                physician__full_name__icontains=search_query
+            ) | patient_list.filter(
+                blood_type__icontains=search_query
+            )
+            
+        paginator = Paginator(patient_list, 10)
+        page_number = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_number)
+        
+        context = {
+            'patients': patient_list,
+            'search_query': search_query,
+            'current_user': current_user,
+            'page_obj': page_obj,
+            'title': 'Patient List',
+            'role': 'D'  # Add role to context
+        }
+        
+        return render(request, 'doctor/PatientList.html', context)
+    except Exception as e:
+        messages.error(request, f'Error: {e}')
+        return HttpResponse(f'Error: {e}')
