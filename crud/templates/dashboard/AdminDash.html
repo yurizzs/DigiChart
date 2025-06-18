@@ -3,83 +3,83 @@
 
 {% block 'content' %}
 {% include 'include/sidebar.html' %}
+{% include 'include/toastMessage.html' %}
 
 <div class="flex flex-col justify-center items-center p-4 space-y-10 bg-gradient-to-br from-blue-50 via-white to-blue-100 min-h-screen">
     <!-- Admin Dashboard Label -->
-    <h2 class="text-3xl font-extrabold mb-8 text-blue-800 flex items-center gap-3 justify-center">
-        <span class="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl shadow-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <h2 class="text-4xl font-extrabold mb-8 text-blue-900 flex items-center gap-4 justify-center drop-shadow">
+        <span class="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl shadow-xl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v4a1 1 0 001 1h3v2a1 1 0 001 1h4a1 1 0 001-1v-2h3a1 1 0 001-1V7a1 1 0 00-1-1H4a1 1 0 00-1 1zm0 0V5a2 2 0 012-2h14a2 2 0 012 2v2" />
             </svg>
         </span>
         Admin Dashboard
     </h2>
     <!-- Stat Cards -->
-    <div class="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         <!-- Total Patients -->
-        <div class="bg-gradient-to-br from-blue-100 to-blue-50 shadow-lg rounded-2xl p-7 text-center border border-blue-200 hover:shadow-xl transition">
-            <div class="flex justify-center mb-2">
-                <div class="bg-blue-500/10 p-3 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="bg-white shadow-xl rounded-2xl p-8 text-center border-t-4 border-blue-400 hover:scale-105 hover:shadow-2xl transition-all duration-200">
+            <div class="flex justify-center mb-3">
+                <div class="bg-blue-100 p-4 rounded-full shadow">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                 </div>
             </div>
-            <h3 class="text-gray-500 text-sm font-medium">Total Patients</h3>
-            <p class="text-3xl font-extrabold text-blue-600 mt-1">{{ total_patients }}</p>
+            <h3 class="text-gray-500 text-base font-semibold">Total Patients</h3>
+            <p class="text-4xl font-extrabold text-blue-700 mt-2 tracking-tight">{{ total_patients }}</p>
         </div>
 
         <!-- Total Physicians -->
-        <div class="bg-gradient-to-br from-green-100 to-green-50 shadow-lg rounded-2xl p-7 text-center border border-green-200 hover:shadow-xl transition">
-            <div class="flex justify-center mb-2">
-                <div class="bg-green-500/10 p-3 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="bg-white shadow-xl rounded-2xl p-8 text-center border-t-4 border-green-400 hover:scale-105 hover:shadow-2xl transition-all duration-200">
+            <div class="flex justify-center mb-3">
+                <div class="bg-green-100 p-4 rounded-full shadow">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0" />
                     </svg>
                 </div>
             </div>
-            <h3 class="text-gray-500 text-sm font-medium">Total Physicians</h3>
-            <p class="text-3xl font-extrabold text-green-600 mt-1">{{ total_physicians }}</p>
+            <h3 class="text-gray-500 text-base font-semibold">Total Physicians</h3>
+            <p class="text-4xl font-extrabold text-green-700 mt-2 tracking-tight">{{ total_physicians }}</p>
         </div>
 
         <!-- Admissions Today -->
-        <div class="bg-gradient-to-br from-yellow-100 to-yellow-50 shadow-lg rounded-2xl p-7 text-center border border-yellow-200 hover:shadow-xl transition">
-            <div class="flex justify-center mb-2">
-                <div class="bg-yellow-400/10 p-3 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="bg-white shadow-xl rounded-2xl p-8 text-center border-t-4 border-yellow-400 hover:scale-105 hover:shadow-2xl transition-all duration-200">
+            <div class="flex justify-center mb-3">
+                <div class="bg-yellow-100 p-4 rounded-full shadow">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
             </div>
-            <h3 class="text-gray-500 text-sm font-medium">Admissions Today</h3>
-            <p class="text-3xl font-extrabold text-yellow-600 mt-1">{{ admissions_today }}</p>
+            <h3 class="text-gray-500 text-base font-semibold">Admissions Today</h3>
+            <p class="text-4xl font-extrabold text-yellow-600 mt-2 tracking-tight">{{ admissions_today }}</p>
         </div>
 
         <!-- Total Nurses -->
-        <div class="bg-gradient-to-br from-pink-100 to-pink-50 shadow-lg rounded-2xl p-7 text-center border border-pink-200 hover:shadow-xl transition">
-            <div class="flex justify-center mb-2">
-                <div class="bg-pink-400/10 p-3 rounded-full">
-                    <!-- Nurse icon: user with medical cross -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="bg-white shadow-xl rounded-2xl p-8 text-center border-t-4 border-pink-400 hover:scale-105 hover:shadow-2xl transition-all duration-200">
+            <div class="flex justify-center mb-3">
+                <div class="bg-pink-100 p-4 rounded-full shadow">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2" fill="none"/>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 20v-2a4 4 0 00-8 0v2M19 10h2m-1-1v2" />
                     </svg>
                 </div>
             </div>
-            <h3 class="text-gray-500 text-sm font-medium">Total Nurses</h3>
-            <p class="text-3xl font-extrabold text-pink-600 mt-1">{{ total_nurses }}</p>
+            <h3 class="text-gray-500 text-base font-semibold">Total Nurses</h3>
+            <p class="text-4xl font-extrabold text-pink-600 mt-2 tracking-tight">{{ total_nurses }}</p>
         </div>
     </div>
 
     <!-- Chart.js Canvas -->
-    <div class="w-full max-w-5xl mx-auto bg-white p-8 rounded-2xl shadow-xl mt-8 border border-blue-100">
-        <h3 class="text-xl font-semibold text-gray-700 mb-6 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <div class="w-full max-w-5xl mx-auto bg-white p-10 rounded-2xl shadow-2xl mt-10 border border-blue-100">
+        <h3 class="text-2xl font-bold text-blue-800 mb-6 flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h2a4 4 0 014 4v2M7 17v-2a4 4 0 00-4-4H3a4 4 0 00-4 4v2" />
             </svg>
             Admissions This Week
         </h3>
-        <div class="relative h-60">
+        <div class="relative h-64">
             <canvas id="admissionsChart"></canvas>
         </div>
     </div>
@@ -99,9 +99,9 @@ const admissionsChart = new Chart(ctx, {
             backgroundColor: 'rgba(59, 130, 246, 0.1)',
             pointBackgroundColor: 'rgba(59, 130, 246, 1)',
             pointBorderColor: '#fff',
-            pointRadius: 6,
-            pointHoverRadius: 10,
-            pointStyle: 'rectRot',
+            pointRadius: 7,
+            pointHoverRadius: 12,
+            pointStyle: 'circle',
             fill: true,
             tension: 0.4
         }]
@@ -111,25 +111,24 @@ const admissionsChart = new Chart(ctx, {
         maintainAspectRatio: false,
         plugins: {
             legend: {
-                labels: { usePointStyle: true }
+                labels: { usePointStyle: true, font: { size: 16 } }
             }
         },
         scales: {
-            y: { beginAtZero: true }
+            y: { beginAtZero: true, ticks: { font: { size: 14 } } },
+            x: { ticks: { font: { size: 14 } } }
         }
     }
 });
 </script>
 
 <style>
-/* Responsive grid for stat cards */
 @media (max-width: 1024px) {
     .grid-cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 640px) {
     .grid-cols-4, .grid-cols-2 { grid-template-columns: 1fr; }
-    .p-7 { padding: 1.25rem !important; }
-    .p-8 { padding: 1.25rem !important; }
+    .p-8, .p-10 { padding: 1.25rem !important; }
 }
 </style>
 

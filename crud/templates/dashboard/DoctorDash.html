@@ -3,34 +3,75 @@
 
 {% block 'content' %}
 {% include 'include/DoctorSidebar.html' %}
+{% include 'include/toastMessage.html' %}
 
-<div class="flex justify-center items-center h-screen">
-    <div class="grid grid-cols-2 grid-rows-2 sm:grid-cols-2 lg:grid-cols-2 gap-2 p-4">
-      <!-- Total Patients -->
-      <div class="bg-white shadow-md rounded-xl p-6 text-center grid-cols-1 grid-rows-1">
-        <h3 class="text-gray-500 text-sm font-medium">Total Patients</h3>
-        <p class="text-3xl font-bold text-blue-600">{{ total_patients }}</p>
-      </div>
-    
-      <!-- Total Physicians -->
-      <div class="bg-white shadow-md rounded-xl p-6 text-center grid-cols-2 grid-rows-1">
-        <h3 class="text-gray-500 text-sm font-medium">Total Physicians</h3>
-        <p class="text-3xl font-bold text-green-600">{{ total_physician }}</p>
-      </div>
-    
-      <!-- Admissions Today -->
-      <div class="bg-white shadow-md rounded-xl p-6 text-center grid-cols-1 grid-rows-2">
-        <h3 class="text-gray-500 text-sm font-medium">Admissions Today</h3>
-        <p class="text-3xl font-bold text-yellow-600">{{ admission_today }}</p>
-      </div>
-    
-      <!-- Total Nurses -->
-      <div class="bg-white shadow-md rounded-xl p-6 text-center grid-cols-2 grid-rows-2">
-        <h3 class="text-gray-500 text-sm font-medium">Total Nurses</h3>
-        <p class="text-3xl font-bold text-pink-600">{{ total_nurses }}</p>
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-white py-10 px-4">
+  <!-- Header -->
+  <div class="max-w-5xl mx-auto mb-8">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <h1 class="text-3xl font-bold text-blue-900">Welcome, Doctor!</h1>
+        <p class="text-gray-500 mt-1">Here’s an overview of your hospital today.</p>
       </div>
     </div>
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+    <div class="bg-white rounded-xl shadow p-5 flex flex-col items-center">
+      <div class="bg-blue-100 p-3 rounded-full mb-2">
+        <svg class="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M17 20h5v-2a4 4 0 0 0-3-3.87M9 20H4v-2a4 4 0 0 1 3-3.87m6-2a4 4 0 1 0-8 0 4 4 0 0 0 8 0zm6 2a4 4 0 1 0-8 0 4 4 0 0 0 8 0z"/>
+        </svg>
+      </div>
+      <div class="text-gray-500 text-xs">Total Patients</div>
+      <div class="text-2xl font-bold text-blue-700">{{ total_patients }}</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-5 flex flex-col items-center">
+      <div class="bg-green-100 p-3 rounded-full mb-2">
+        <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+      </div>
+      <div class="text-gray-500 text-xs">Total Physicians</div>
+      <div class="text-2xl font-bold text-green-700">{{ total_physician }}</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-5 flex flex-col items-center">
+      <div class="bg-yellow-100 p-3 rounded-full mb-2">
+        <svg class="w-7 h-7 text-yellow-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M8 17l4 4 4-4m-4-5v9"/>
+        </svg>
+      </div>
+      <div class="text-gray-500 text-xs">Admissions Today</div>
+      <div class="text-2xl font-bold text-yellow-700">{{ admission_today }}</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-5 flex flex-col items-center">
+      <div class="bg-pink-100 p-3 rounded-full mb-2">
+        <svg class="w-7 h-7 text-pink-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+      </div>
+      <div class="text-gray-500 text-xs">Total Nurses</div>
+      <div class="text-2xl font-bold text-pink-700">{{ total_nurses }}</div>
+    </div>
+  </div>
+
+  <!-- Recent Activity -->
+  <div class="max-w-5xl mx-auto">
+    <div class="bg-white rounded-xl shadow p-6">
+      <h2 class="text-lg font-semibold text-blue-900 mb-4">Recent Admissions</h2>
+      <ul class="divide-y divide-gray-100">
+        {% for admission in recent_admissions %}
+        <li class="py-2 flex items-center justify-between">
+          <span class="text-gray-700">{{ admission.patient_name }}</span>
+          <span class="text-xs text-gray-400">{{ admission.time }}</span>
+        </li>
+        {% empty %}
+        <li class="py-2 text-gray-400">No recent admissions.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
 </div>
 
 {% endblock 'content' %}
-

@@ -523,8 +523,11 @@ def edit_patient(request, patient_id):
 @custom_login_view('N', 'D')
 def show_information(request, patient_id):
     try:
+        if not patient_id:
+            messages.error(request, 'Patient ID is required.')
+            return redirect('/patient/list')
+            
         patient = Patient.objects.get(pk=patient_id)
-        # return render(request, 'nurse/ShowInformation.html', {'patient': patient})
         vitals = VitalSigns.objects.filter(patient_id=patient_id).order_by('-date', '-time')
         current_user = get_current_user(request)
 
@@ -533,8 +536,12 @@ def show_information(request, patient_id):
             'vitals': vitals,
             'current_user': current_user,
         })
+    except Patient.DoesNotExist:
+        messages.error(request, 'Patient not found.')
+        return redirect('/patient/list')
     except Exception as e:
-        return HttpResponse(f'Error: {e}')
+        messages.error(request, f'Error: {str(e)}')
+        return redirect('/patient/list')
 
 @custom_login_view('N')
 def add_vitals(request):
@@ -904,3 +911,22 @@ def doctor_patient_list(request):
     except Exception as e:
         messages.error(request, f'Error: {e}')
         return HttpResponse(f'Error: {e}')
+
+@custom_login_view('N', 'D')
+def edit_vital_signs(request, vital_id):
+    vital = get_object_or_404(VitalSigns, id=vital_id)
+    current_user = get_current_user(request)
+    if request.method == 'POST':
+        # Update vital signs
+        vital.date = request.POST.get('date')
+        vital.time = request.POST.get('time')
+        vital.temperature = request.POST.get('temperature')
+        vital.pulse = request.POST.get('pulse')
+        vital.respiration = request.POST.get('respiration')
+        vital.blood_pressure = request.POST.get('blood_pressure')
+        vital.o_sat = request.POST.get('o_sat')
+        vital.notes = request.POST.get('notes')
+        vital.save()
+        messages.success(request, 'Vital signs updated successfully.')
+        return redirect('patient_vitals', patient_id=vital.patient.patient_id)
+    return render(request, 'nurse/EditVitalSigns.html', {'vital': vital, 'current_user': current_user})
